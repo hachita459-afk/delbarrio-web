@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Del Barrio — Dueños</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f8f8; min-height: 100vh; }
+
+    header {
+      background: #2a9d8f;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-icon { width: 36px; height: 36px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    .logo-circle { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid #fff; display: flex; align-items: center; justify-content: center; }
+    .logo-pin { width: 6px; height: 6px; border-radius: 50%; background: #fff; }
+    .logo-text { font-size: 20px; font-weight: 700; color: #fff; }
+    .btn-volver { background: rgba(255,255,255,0.2); color: #fff; border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; }
+
+    .wrap {
+      max-width: 440px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .logo-grande {
+      width: 64px; height: 64px;
+      background: #2a9d8f;
+      border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .logo-grande-circle { width: 26px; height: 26px; border-radius: 50%; border: 3px solid #fff; display: flex; align-items: center; justify-content: center; }
+    .logo-grande-pin { width: 10px; height: 10px; border-radius: 50%; background: #fff; }
+
+    .titulo { font-size: 24px; font-weight: 700; color: #2a9d8f; text-align: center; margin-bottom: 6px; }
+    .subtitulo { font-size: 14px; color: #888; text-align: center; margin-bottom: 28px; }
+
+    .toggle {
+      display: flex;
+      background: #f0f0f0;
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 28px;
+    }
+    .toggle-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      background: transparent;
+      color: #888;
+      transition: all 0.15s;
+    }
+    .toggle-btn.activo {
+      background: #fff;
+      color: #2a9d8f;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .field { margin-bottom: 18px; }
+    .label { font-size: 13px; color: #666; font-weight: 500; margin-bottom: 6px; display: block; }
+    .input {
+      width: 100%;
+      border: 1.5px solid #ddd;
+      border-radius: 12px;
+      padding: 13px 16px;
+      font-size: 15px;
+      background: #fafafa;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .input:focus { border-color: #2a9d8f; background: #fff; }
+
+    .btn-primary {
+      width: 100%;
+      background: #2a9d8f;
+      color: #fff;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-primary:disabled { background: #aaa; cursor: not-allowed; }
+
+    .btn-secondary {
+      width: 100%;
+      background: transparent;
+      color: #e63939;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .msg {
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .msg.ok { background: #d0f0ec; color: #2a9d8f; display: block; }
+    .msg.error { background: #ffe0e0; color: #e63939; display: block; }
+
+    .info-text { font-size: 13px; color: #aaa; text-align: center; margin-top: 20px; line-height: 1.5; }
+
+    /* PANEL DUEÑO */
+    #panel { display: none; }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .panel-titulo { font-size: 20px; font-weight: 700; color: #1a1a2e; }
+    .bienvenido { font-size: 14px; color: #888; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="index.html">
+    <div class="logo-icon"><div class="logo-circle"><div class="logo-pin"></div></div></div>
+    <span class="logo-text">Del Barrio</span>
+  </a>
+  <a class="btn-volver" href="index.html">← Volver</a>
+</header>
+
+<div class="wrap">
+  <!-- FORMULARIO LOGIN/REGISTRO -->
+  <div class="card" id="form-card">
+    <div class="logo-grande"><div class="logo-grande-circle"><div class="logo-grande-pin"></div></div></div>
+    <div class="titulo">Del Barrio</div>
+    <div class="subtitulo">Acceso exclusivo para dueños de locales</div>
+
+    <div class="toggle">
+      <button class="toggle-btn activo" id="btn-login" onclick="setModo('login')">Ingresar</button>
+      <button class="toggle-btn" id="btn-registro" onclick="setModo('registro')">Registrarse</button>
+    </div>
+
+    <div class="msg" id="msg"></div>
+
+    <div class="field" id="field-nombre" style="display:none">
+      <label class="label">Nombre completo</label>
+      <input class="input" id="nombre" type="text" placeholder="Juan García" autocomplete="name">
+    </div>
+
+    <div class="field">
+      <label class="label">Email</label>
+      <input class="input" id="email" type="email" placeholder="correo@ejemplo.com" autocomplete="email">
+    </div>
+
+    <div class="field">
+      <label class="label">Contraseña</label>
+      <input class="input" id="password" type="password" placeholder="Mínimo 6 caracteres" autocomplete="current-password">
+    </div>
+
+    <button class="btn-primary" id="btn-submit" onclick="handleSubmit()">Ingresar</button>
+
+    <p class="info-text" id="info-registro" style="display:none">
+      Una vez creada la cuenta podrás gestionar tu local desde la app Del Barrio.
+    </p>
+  </div>
+
+  <!-- PANEL DUEÑO (logueado) -->
+  <div class="card" id="panel">
+    <div class="panel-header">
+      <div class="panel-titulo">Mi cuenta</div>
+      <button class="btn-secondary" style="width:auto;margin:0" onclick="cerrarSesion()">Cerrar sesión</button>
+    </div>
+    <div class="bienvenido" id="bienvenido-texto"></div>
+    <p style="font-size:15px;color:#555;line-height:1.6;margin-bottom:20px;">
+      Para gestionar tu local, agregar fotos, editar información y ver tus novedades, usá la app <strong>Del Barrio</strong> desde tu celular.
+    </p>
+    <a href="index.html" class="btn-primary" style="display:block;text-align:center;text-decoration:none;">
+      Ver el mapa
+    </a>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://dlvtgrjmeyuxgojryafr.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_R2C9F9NOjCNx765jp90DbA_hr70zqPT';
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let modo = 'login';
+
+  function setModo(m) {
+    modo = m;
+    document.getElementById('btn-login').classList.toggle('activo', m === 'login');
+    document.getElementById('btn-registro').classList.toggle('activo', m === 'registro');
+    document.getElementById('field-nombre').style.display = m === 'registro' ? 'block' : 'none';
+    document.getElementById('info-registro').style.display = m === 'registro' ? 'block' : 'none';
+    document.getElementById('btn-submit').textContent = m === 'login' ? 'Ingresar' : 'Crear cuenta como dueño';
+    ocultarMsg();
+  }
+
+  function mostrarMsg(texto, tipo) {
+    const el = document.getElementById('msg');
+    el.textContent = texto;
+    el.className = `msg ${tipo}`;
+  }
+
+  function ocultarMsg() {
+    document.getElementById('msg').className = 'msg';
+  }
+
+  async function handleSubmit() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const nombre = document.getElementById('nombre').value.trim();
+    const btn = document.getElementById('btn-submit');
+
+    if (!email || !password) { mostrarMsg('Completá email y contraseña.', 'error'); return; }
+    if (modo === 'registro' && !nombre) { mostrarMsg('Ingresá tu nombre completo.', 'error'); return; }
+
+    btn.disabled = true;
+    btn.textContent = modo === 'login' ? 'Ingresando...' : 'Creando cuenta...';
+    ocultarMsg();
+
+    if (modo === 'login') {
+      const { error } = await db.auth.signInWithPassword({ email, password });
+      if (error) {
+        mostrarMsg('Email o contraseña incorrectos.', 'error');
+      } else {
+        mostrarPanel();
+      }
+    } else {
+      const { data, error } = await db.auth.signUp({ email, password });
+      if (error) {
+        mostrarMsg(error.message, 'error');
+      } else if (data.user) {
+        await db.from('profiles').insert({ id: data.user.id, full_name: nombre, role: 'dueno' });
+        mostrarMsg('¡Cuenta creada! Revisá tu email para confirmar tu cuenta.', 'ok');
+      }
+    }
+
+    btn.disabled = false;
+    btn.textContent = modo === 'login' ? 'Ingresar' : 'Crear cuenta como dueño';
+  }
+
+  async function mostrarPanel() {
+    const { data: { user } } = await db.auth.getUser();
+    if (!user) return;
+    const { data: profile } = await db.from('profiles').select('full_name').eq('id', user.id).single();
+    const nombre = profile?.full_name || user.email;
+    document.getElementById('bienvenido-texto').textContent = `Bienvenido, ${nombre}`;
+    document.getElementById('form-card').style.display = 'none';
+    document.getElementById('panel').style.display = 'block';
+  }
+
+  async function cerrarSesion() {
+    await db.auth.signOut();
+    document.getElementById('form-card').style.display = 'block';
+    document.getElementById('panel').style.display = 'none';
+    setModo('login');
+  }
+
+  // Chequear si ya está logueado
+  db.auth.getSession().then(({ data: { session } }) => {
+    if (session) mostrarPanel();
+  });
+</script>
+</body>
+</html>
