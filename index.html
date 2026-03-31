@@ -227,19 +227,20 @@
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19, attribution: '' }).addTo(mapa);
 
   // Geolocalización
+  let userMarker = null;
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(pos => {
       userLat = pos.coords.latitude;
       userLng = pos.coords.longitude;
       mapa.setView([userLat, userLng], 15);
-      L.marker([userLat, userLng], {
+      if (userMarker) mapa.removeLayer(userMarker);
+      userMarker = L.marker([userLat, userLng], {
         icon: L.divIcon({
           html: '<div style="width:16px;height:16px;background:#22c55e;border-radius:50%;border:3px solid white;box-shadow:0 0 0 4px rgba(34,197,94,0.3);"></div>',
           iconSize: [16,16], iconAnchor: [8,8], className: ''
         })
       }).addTo(mapa);
-      renderMapa();
-    });
+    }, () => {}, { enableHighAccuracy: true, timeout: 10000 });
   }
 
   async function cargar() {
