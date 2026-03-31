@@ -10,171 +10,42 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f8f8; }
-
-    /* HEADER */
-    header {
-      background: #2a9d8f;
-      padding: 0 24px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    }
+    header { background: #2a9d8f; padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
     .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-    .logo-icon {
-      width: 36px; height: 36px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .logo-circle {
-      width: 16px; height: 16px;
-      border-radius: 50%;
-      border: 2.5px solid #fff;
-      display: flex; align-items: center; justify-content: center;
-    }
+    .logo-icon { width: 36px; height: 36px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    .logo-circle { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid #fff; display: flex; align-items: center; justify-content: center; }
     .logo-pin { width: 6px; height: 6px; border-radius: 50%; background: #fff; }
     .logo-text { font-size: 20px; font-weight: 700; color: #fff; }
-    .btn-duenos {
-      background: #1a1a2e;
-      color: #fff;
-      border: none;
-      padding: 8px 20px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-    }
-    .btn-duenos:hover { opacity: 0.85; }
-
-    /* TOGGLE VISTA */
-    .vista-toggle {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      padding: 16px;
-      background: #2a9d8f;
-    }
-    .vista-btn {
-      padding: 8px 24px;
-      border-radius: 20px;
-      border: none;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      background: rgba(255,255,255,0.2);
-      color: rgba(255,255,255,0.8);
-      transition: all 0.15s;
-    }
+    .btn-duenos { background: #1a1a2e; color: #fff; border: none; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; }
+    .vista-toggle { display: flex; justify-content: center; gap: 8px; padding: 16px; background: #2a9d8f; }
+    .vista-btn { padding: 8px 24px; border-radius: 20px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); transition: all 0.15s; }
     .vista-btn.activo { background: rgba(255,255,255,0.35); color: #fff; }
-
-    /* FILTRO */
-    .filtro-wrap {
-      padding: 12px 16px;
-      background: #fff;
-      border-bottom: 1px solid #eee;
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
+    .filtro-wrap { padding: 12px 16px; background: #fff; border-bottom: 1px solid #eee; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
     .filtro-wrap::-webkit-scrollbar { display: none; }
-    .filtro-pill {
-      padding: 6px 16px;
-      border-radius: 20px;
-      border: none;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      background: #f0f0f0;
-      color: #555;
-      white-space: nowrap;
-      transition: all 0.15s;
-    }
+    .filtro-pill { padding: 6px 16px; border-radius: 20px; border: none; font-size: 13px; font-weight: 500; cursor: pointer; background: #f0f0f0; color: #555; white-space: nowrap; transition: all 0.15s; }
     .filtro-pill.activo { background: #2a9d8f; color: #fff; }
-
-    /* MAPA */
     #mapa-wrap { position: relative; }
     #mapa { height: calc(100vh - 140px); width: 100%; }
-    #btn-filtro-mapa {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      z-index: 500;
-      background: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    }
-
-    /* LISTA */
+    #btn-filtro-mapa { position: absolute; top: 16px; left: 16px; z-index: 500; background: #fff; border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
     #lista-wrap { display: none; padding: 16px; max-width: 800px; margin: 0 auto; }
-    .card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-      cursor: pointer;
-      text-decoration: none;
-      display: block;
-      transition: transform 0.1s;
-    }
+    .card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor: pointer; text-decoration: none; display: block; transition: transform 0.1s; }
     .card:hover { transform: translateY(-2px); }
     .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
     .card-nombre { font-size: 17px; font-weight: 600; color: #1a1a2e; }
-    .card-novedad {
-      background: #fb923c;
-      color: #fff;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 20px;
-    }
+    .card-novedad { background: #fb923c; color: #fff; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
     .card-categoria { font-size: 13px; color: #2a9d8f; font-weight: 500; margin-bottom: 4px; }
     .card-dir { font-size: 13px; color: #888; }
-
     .sin-locales { text-align: center; padding: 60px 20px; color: #aaa; font-size: 15px; }
-
-    /* MODAL FILTRO */
     .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 2000; align-items: flex-end; justify-content: center; }
     .overlay.visible { display: flex; }
-    .modal-filtro {
-      background: #fff;
-      border-radius: 20px 20px 0 0;
-      padding: 24px;
-      width: 100%;
-      max-width: 600px;
-      max-height: 70vh;
-      overflow-y: auto;
-    }
+    .modal-filtro { background: #fff; border-radius: 20px 20px 0 0; padding: 24px; width: 100%; max-width: 600px; max-height: 70vh; overflow-y: auto; }
     .modal-titulo { font-size: 16px; font-weight: 700; color: #1a1a2e; margin-bottom: 16px; }
     .modal-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-    .modal-pill {
-      padding: 10px 16px;
-      border-radius: 10px;
-      border: none;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      background: #f0f0f0;
-      color: #555;
-      transition: all 0.15s;
-    }
+    .modal-pill { padding: 10px 16px; border-radius: 10px; border: none; font-size: 13px; font-weight: 500; cursor: pointer; background: #f0f0f0; color: #555; transition: all 0.15s; }
     .modal-pill.activo { background: #2a9d8f; color: #fff; font-weight: 600; }
   </style>
 </head>
 <body>
-
 <header>
   <a class="logo" href="index.html">
     <div class="logo-icon"><div class="logo-circle"><div class="logo-pin"></div></div></div>
@@ -182,25 +53,18 @@
   </a>
   <a class="btn-duenos" href="duenos.html">DUEÑOS</a>
 </header>
-
 <div class="vista-toggle">
   <button class="vista-btn activo" onclick="setVista('mapa', this)">🗺 Mapa</button>
   <button class="vista-btn" onclick="setVista('lista', this)">☰ Lista</button>
 </div>
-
-<!-- MAPA -->
 <div id="mapa-wrap">
   <div id="mapa"></div>
   <button id="btn-filtro-mapa" onclick="abrirFiltro()">⚙ Filtrar</button>
 </div>
-
-<!-- LISTA -->
 <div id="lista-wrap">
   <div class="filtro-wrap" id="filtro-lista"></div>
   <div id="lista-contenido"></div>
 </div>
-
-<!-- MODAL FILTRO -->
 <div class="overlay" id="overlay" onclick="if(event.target===this) cerrarFiltro()">
   <div class="modal-filtro">
     <div class="modal-titulo">Filtrar por categoría</div>
@@ -219,20 +83,18 @@
   let locales = [];
   let filtro = 'Todos';
   let vista = 'mapa';
-  let mapa, userLat = -34.6037, userLng = -58.3816;
+  let mapa, userLat = null, userLng = null;
   let markers = [];
+  let userMarker = null;
 
-  // INIT MAPA
-  mapa = L.map('mapa', { zoomControl: false }).setView([userLat, userLng], 14);
+  mapa = L.map('mapa', { zoomControl: true }).setView([-34.6037, -58.3816], 13);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19, attribution: '' }).addTo(mapa);
 
-  // Geolocalización
-  let userMarker = null;
+  // Geolocalización — solo mueve el marcador, no recentra el mapa
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(pos => {
       userLat = pos.coords.latitude;
       userLng = pos.coords.longitude;
-      mapa.setView([userLat, userLng], 15);
       if (userMarker) mapa.removeLayer(userMarker);
       userMarker = L.marker([userLat, userLng], {
         icon: L.divIcon({
@@ -240,12 +102,21 @@
           iconSize: [16,16], iconAnchor: [8,8], className: ''
         })
       }).addTo(mapa);
-    }, () => {}, { enableHighAccuracy: true, timeout: 10000 });
+    }, null, { enableHighAccuracy: true, timeout: 10000 });
   }
 
   async function cargar() {
     const { data } = await db.from('locales').select('*').eq('activo', true).eq('suspendido', false);
     locales = data || [];
+
+    // Centrar el mapa en el centro de los locales
+    const conCoords = locales.filter(l => l.lat && l.lng);
+    if (conCoords.length > 0) {
+      const avgLat = conCoords.reduce((s, l) => s + parseFloat(l.lat), 0) / conCoords.length;
+      const avgLng = conCoords.reduce((s, l) => s + parseFloat(l.lng), 0) / conCoords.length;
+      mapa.setView([avgLat, avgLng], 14);
+    }
+
     renderMapa();
     renderLista();
     renderFiltroLista();
@@ -253,9 +124,7 @@
   }
 
   function localesFiltrados() {
-    return filtro === 'Todos'
-      ? locales
-      : locales.filter(l => Array.isArray(l.categoria) ? l.categoria.includes(filtro) : l.categoria === filtro);
+    return filtro === 'Todos' ? locales : locales.filter(l => Array.isArray(l.categoria) ? l.categoria.includes(filtro) : l.categoria === filtro);
   }
 
   function renderMapa() {
@@ -266,24 +135,21 @@
       const novedad = l.tiene_novedad;
       const color = novedad ? '#fb923c' : '#2563eb';
       const html = novedad
-        ? `<div style="position:relative;width:16px;height:16px;">
-            <div style="position:absolute;top:-5px;left:-5px;width:26px;height:26px;border-radius:50%;background:rgba(251,146,60,0.4);animation:pulse 1.4s ease-in-out infinite;"></div>
-            <div style="width:16px;height:16px;background:#fb923c;border-radius:50%;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);position:relative;z-index:1;"></div>
-           </div>`
-        : `<div style="width:14px;height:14px;background:#2563eb;border-radius:50%;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3);"></div>`;
+        ? '<div style="position:relative;width:16px;height:16px;"><div style="position:absolute;top:-5px;left:-5px;width:26px;height:26px;border-radius:50%;background:rgba(251,146,60,0.4);animation:pulse 1.4s ease-in-out infinite;"></div><div style="width:16px;height:16px;background:#fb923c;border-radius:50%;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);position:relative;z-index:1;"></div></div>'
+        : '<div style="width:14px;height:14px;background:#2563eb;border-radius:50%;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3);"></div>';
 
       const marker = L.marker([parseFloat(l.lat), parseFloat(l.lng)], {
-        icon: L.divIcon({ html, iconSize: [16,16], iconAnchor: [8,8], className: '' })
+        icon: L.divIcon({ html: html, iconSize: [16,16], iconAnchor: [8,8], className: '' })
       }).addTo(mapa);
 
-      marker.bindPopup(`
-        <div style="text-align:center;padding:8px;min-width:180px;">
-          ${novedad ? '<div style="background:#fff3e0;color:#c2410c;font-size:11px;font-weight:600;padding:3px 8px;border-radius:10px;display:inline-block;margin-bottom:6px;">🔔 ¡Novedad!</div><br>' : ''}
-          <strong style="font-size:14px;">${l.nombre}</strong><br>
-          <small style="color:#888;">${Array.isArray(l.categoria) ? l.categoria[0] : l.categoria}</small><br><br>
-          <a href="local.html?id=${l.id}" style="background:${color};color:white;text-decoration:none;padding:8px 0;border-radius:8px;display:block;font-weight:600;font-size:13px;">Ver local</a>
-        </div>
-      `);
+      marker.bindPopup(
+        '<div style="text-align:center;padding:8px;min-width:180px;">' +
+        (novedad ? '<div style="background:#fff3e0;color:#c2410c;font-size:11px;font-weight:600;padding:3px 8px;border-radius:10px;display:inline-block;margin-bottom:6px;">🔔 ¡Novedad!</div><br>' : '') +
+        '<strong style="font-size:14px;">' + l.nombre + '</strong><br>' +
+        '<small style="color:#888;">' + (Array.isArray(l.categoria) ? l.categoria[0] : l.categoria) + '</small><br><br>' +
+        '<a href="local.html?id=' + l.id + '" style="background:' + color + ';color:white;text-decoration:none;padding:8px 0;border-radius:8px;display:block;font-weight:600;font-size:13px;">Ver local</a>' +
+        '</div>'
+      );
       markers.push(marker);
     });
   }
@@ -291,46 +157,34 @@
   function renderLista() {
     const wrap = document.getElementById('lista-contenido');
     const items = localesFiltrados();
-    if (items.length === 0) {
-      wrap.innerHTML = '<div class="sin-locales">No hay locales en esta categoría.</div>';
-      return;
-    }
-    wrap.innerHTML = items.map(l => `
-      <a class="card" href="local.html?id=${l.id}">
-        <div class="card-header">
-          <span class="card-nombre">${l.nombre}</span>
-          ${l.tiene_novedad ? '<span class="card-novedad">🔔 Novedad</span>' : ''}
-        </div>
-        <div class="card-categoria">${Array.isArray(l.categoria) ? l.categoria.join(' · ') : l.categoria}</div>
-        <div class="card-dir">📍 ${l.direccion || ''}</div>
-      </a>
-    `).join('');
+    if (items.length === 0) { wrap.innerHTML = '<div class="sin-locales">No hay locales en esta categoría.</div>'; return; }
+    wrap.innerHTML = items.map(l =>
+      '<a class="card" href="local.html?id=' + l.id + '">' +
+        '<div class="card-header"><span class="card-nombre">' + l.nombre + '</span>' +
+        (l.tiene_novedad ? '<span class="card-novedad">🔔 Novedad</span>' : '') + '</div>' +
+        '<div class="card-categoria">' + (Array.isArray(l.categoria) ? l.categoria.join(' · ') : l.categoria) + '</div>' +
+        '<div class="card-dir">📍 ' + (l.direccion || '') + '</div>' +
+      '</a>'
+    ).join('');
   }
 
   function renderFiltroLista() {
-    document.getElementById('filtro-lista').innerHTML = CATEGORIAS.map(cat => `
-      <button class="filtro-pill ${filtro === cat ? 'activo' : ''}" onclick="setFiltro('${cat}')">${cat}</button>
-    `).join('');
+    document.getElementById('filtro-lista').innerHTML = CATEGORIAS.map(cat =>
+      '<button class="filtro-pill ' + (filtro === cat ? 'activo' : '') + '" onclick="setFiltro(\'' + cat + '\')">' + cat + '</button>'
+    ).join('');
   }
 
   function renderModalGrid() {
-    document.getElementById('modal-grid').innerHTML = CATEGORIAS.map(cat => `
-      <button class="modal-pill ${filtro === cat ? 'activo' : ''}" onclick="setFiltroMapa('${cat}')">${cat}</button>
-    `).join('');
+    document.getElementById('modal-grid').innerHTML = CATEGORIAS.map(cat =>
+      '<button class="modal-pill ' + (filtro === cat ? 'activo' : '') + '" onclick="setFiltroMapa(\'' + cat + '\')">' + cat + '</button>'
+    ).join('');
   }
 
-  function setFiltro(cat) {
-    filtro = cat;
-    renderFiltroLista();
-    renderLista();
-  }
-
+  function setFiltro(cat) { filtro = cat; renderFiltroLista(); renderLista(); }
   function setFiltroMapa(cat) {
     filtro = cat;
-    document.getElementById('btn-filtro-mapa').textContent = cat === 'Todos' ? '⚙ Filtrar' : `⚙ ${cat}`;
-    renderMapa();
-    renderModalGrid();
-    cerrarFiltro();
+    document.getElementById('btn-filtro-mapa').textContent = cat === 'Todos' ? '⚙ Filtrar' : '⚙ ' + cat;
+    renderMapa(); renderModalGrid(); cerrarFiltro();
   }
 
   function setVista(v, btn) {
@@ -345,7 +199,6 @@
   function abrirFiltro() { document.getElementById('overlay').classList.add('visible'); }
   function cerrarFiltro() { document.getElementById('overlay').classList.remove('visible'); }
 
-  // CSS animación pulse
   const style = document.createElement('style');
   style.textContent = '@keyframes pulse { 0%{transform:scale(1);opacity:0.8} 50%{transform:scale(1.5);opacity:0.3} 100%{transform:scale(1);opacity:0.8} }';
   document.head.appendChild(style);
