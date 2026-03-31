@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Del Barrio — Mi Local</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f8f8; }
+
+    header {
+      background: #2a9d8f;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-icon { width: 36px; height: 36px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    .logo-circle { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid #fff; display: flex; align-items: center; justify-content: center; }
+    .logo-pin { width: 6px; height: 6px; border-radius: 50%; background: #fff; }
+    .logo-text { font-size: 20px; font-weight: 700; color: #fff; }
+    .btn-salir { background: rgba(255,255,255,0.2); color: #fff; border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+
+    .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 60px; }
+
+    /* BANNER */
+    .banner { padding: 12px 16px; border-radius: 12px; margin-bottom: 20px; font-size: 13px; font-weight: 500; }
+    .banner-ok { background: #d0f0ec; color: #2a9d8f; }
+    .banner-warn { background: #fff3cd; color: #856404; }
+    .banner-error { background: #ffe0e0; color: #e63939; }
+    .banner-btn { display: inline-block; margin-top: 8px; background: #1a1a2e; color: #fff; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; }
+
+    /* SECCIONES */
+    .seccion { background: #fff; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .seccion-titulo { font-size: 15px; font-weight: 700; color: #1a1a2e; margin-bottom: 16px; }
+
+    /* FOTOS */
+    .fotos-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+    .foto-wrap { position: relative; }
+    .foto-thumb { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; display: block; }
+    .foto-nueva { border: 2px solid #22c55e; }
+    .foto-borrar { position: absolute; top: -6px; right: -6px; background: #e63939; border: none; border-radius: 50%; width: 20px; height: 20px; color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .btn-agregar-foto { width: 80px; height: 80px; border-radius: 10px; border: 2px dashed #ddd; background: none; cursor: pointer; font-size: 13px; color: #888; display: flex; align-items: center; justify-content: center; }
+
+    /* MAPA */
+    #mapa-picker { height: 260px; border-radius: 12px; overflow: hidden; margin-bottom: 12px; }
+    .btn-ubicar { width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 12px; }
+    .btn-ubicar-default { background: #1a1a2e; color: #fff; }
+    .btn-ubicar-ok { background: #2d6a4f; color: #fff; }
+
+    /* CAMPOS */
+    .field { margin-bottom: 16px; }
+    .label { font-size: 13px; color: #666; font-weight: 500; margin-bottom: 6px; display: block; }
+    .input {
+      width: 100%; border: 1.5px solid #ddd; border-radius: 10px;
+      padding: 12px 14px; font-size: 15px; background: #fafafa; outline: none;
+      transition: border-color 0.15s; font-family: inherit;
+    }
+    .input:focus { border-color: #2a9d8f; background: #fff; }
+    textarea.input { min-height: 120px; resize: vertical; }
+
+    /* CATEGORÍAS */
+    .cats-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .cat-pill {
+      padding: 8px 14px; border-radius: 20px; border: none;
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      background: #f0f0f0; color: #555; transition: all 0.15s;
+    }
+    .cat-pill.activo { background: #1a1a2e; color: #fff; }
+
+    /* BOTÓN GUARDAR */
+    .btn-guardar {
+      width: 100%; background: #1a1a2e; color: #fff; border: none;
+      padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 700;
+      cursor: pointer; margin-top: 8px; transition: opacity 0.15s;
+    }
+    .btn-guardar:hover { opacity: 0.9; }
+    .btn-guardar:disabled { background: #aaa; cursor: not-allowed; }
+
+    /* MSG */
+    .msg { padding: 12px 16px; border-radius: 10px; font-size: 14px; margin-bottom: 16px; display: none; }
+    .msg.ok { background: #d0f0ec; color: #2a9d8f; display: block; }
+    .msg.error { background: #ffe0e0; color: #e63939; display: block; }
+
+    .loading { text-align: center; padding: 60px; color: #888; }
+
+    /* SUSPENDIDO */
+    .suspendido-overlay {
+      background: #ffe0e0; border-radius: 16px; padding: 40px 24px;
+      text-align: center; margin-bottom: 16px;
+    }
+    .suspendido-emoji { font-size: 48px; margin-bottom: 12px; }
+    .suspendido-titulo { font-size: 22px; font-weight: 700; color: #e63939; margin-bottom: 8px; }
+    .suspendido-texto { font-size: 15px; color: #666; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="index.html">
+    <div class="logo-icon"><div class="logo-circle"><div class="logo-pin"></div></div></div>
+    <span class="logo-text">Del Barrio</span>
+  </a>
+  <button class="btn-salir" onclick="cerrarSesion()">Cerrar sesión</button>
+</header>
+
+<div class="wrap" id="wrap">
+  <div class="loading">Cargando...</div>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://dlvtgrjmeyuxgojryafr.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_R2C9F9NOjCNx765jp90DbA_hr70zqPT';
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const CATEGORIAS = ['Restaurant','Peluqueria','Ropa','Odontologia','Supermercado','Kiosko','Carniceria','Verduleria','Panaderia','Fiambreria','Iglesia','Heladeria','Comida Rapida','Loteria','Bicicleteria','Servicio Tecnico','Libreria','Cafeteria','Relojeria y Joyas','Floreria','Taller Mecanico Motos','Taller Mecanico Autos','Gomeria','Centro de Estetica','Consultorio Legal','Consultorio Medico','Consultorio Contable','Articulos de Libreria','Otros'];
+  const MAX_FOTOS = 5;
+
+  let session = null;
+  let local = null;
+  let coords = null;
+  let mapa = null;
+  let mapaMarker = null;
+  let fotosGuardadas = [];
+  let fotosNuevas = []; // {file, url}
+  let categorias = [];
+
+  async function init() {
+    const { data: { session: s } } = await db.auth.getSession();
+    if (!s) { window.location.href = 'duenos.html'; return; }
+    session = s;
+    await cargarLocal();
+  }
+
+  function diasRestantes(freeUntil) {
+    if (!freeUntil) return 0;
+    return Math.ceil((new Date(freeUntil) - new Date()) / (1000 * 60 * 60 * 24));
+  }
+
+  async function cargarLocal() {
+    const { data, error } = await db.from('locales').select('*').eq('owner_id', session.user.id).single();
+    if (error && error.code !== 'PGRST116') {
+      document.getElementById('wrap').innerHTML = '<div class="loading">Error al cargar datos.</div>';
+      return;
+    }
+    local = data || null;
+    if (local) {
+      fotosGuardadas = local.fotos || [];
+      categorias = Array.isArray(local.categoria) ? local.categoria : (local.categoria ? [local.categoria] : []);
+      if (local.lat && local.lng) coords = { lat: parseFloat(local.lat), lng: parseFloat(local.lng) };
+    }
+    renderPanel();
+  }
+
+  function renderPanel() {
+    const wrap = document.getElementById('wrap');
+
+    if (local?.suspendido) {
+      wrap.innerHTML = `
+        <div class="suspendido-overlay">
+          <div class="suspendido-emoji">🚫</div>
+          <div class="suspendido-titulo">CUENTA SUSPENDIDA</div>
+          <div class="suspendido-texto">Tu cuenta ha sido suspendida. Contactá con Del Barrio para más información.</div>
+        </div>`;
+      return;
+    }
+
+    const dias = diasRestantes(local?.free_until);
+    const porVencer = dias > 0 && dias <= 7;
+    const vencido = local && !local.activo && dias <= 0;
+
+    let bannerHtml = '';
+    if (local && dias > 0 && !porVencer) {
+      bannerHtml = `<div class="banner banner-ok">✅ Período gratis activo — ${dias} día${dias === 1 ? '' : 's'} restantes</div>`;
+    } else if (local && porVencer) {
+      bannerHtml = `<div class="banner banner-warn">⚠️ Tu período gratis vence en ${dias} día${dias === 1 ? '' : 's'}</div>`;
+    } else if (vencido) {
+      bannerHtml = `<div class="banner banner-error">❌ Tu período gratis venció. Activá un plan para seguir visible.</div>`;
+    }
+
+    const nombre = local?.nombre || '';
+    const descripcion = local?.descripcion || '';
+    const direccion = local?.direccion || '';
+    const telefono = local?.telefono || '';
+    const horario = local?.horario || '';
+    const totalFotos = fotosGuardadas.length + fotosNuevas.length;
+
+    wrap.innerHTML = `
+      ${bannerHtml}
+      <div class="msg" id="msg"></div>
+
+      <!-- FOTOS -->
+      <div class="seccion">
+        <div class="seccion-titulo">Fotos (${totalFotos}/${MAX_FOTOS})</div>
+        <div class="fotos-row" id="fotos-row"></div>
+      </div>
+
+      <!-- UBICACIÓN -->
+      <div class="seccion">
+        <div class="seccion-titulo">Ubicación</div>
+        <div id="mapa-picker"></div>
+        <div id="coords-texto" style="font-size:13px;color:#888;margin-bottom:8px;">
+          ${coords ? '📍 Ubicación guardada. Hacé click en el mapa para cambiarla.' : 'Hacé click en el mapa para fijar tu ubicación.'}
+        </div>
+      </div>
+
+      <!-- DATOS -->
+      <div class="seccion">
+        <div class="seccion-titulo">Información del local</div>
+
+        <div class="field">
+          <label class="label">Nombre *</label>
+          <input class="input" id="nombre" value="${nombre}" placeholder="Nombre del local">
+        </div>
+
+        <div class="field">
+          <label class="label">Categorías * <span id="cats-count" style="color:#1a1a2e;font-weight:600;">${categorias.length > 0 ? '(' + categorias.length + ' seleccionadas)' : ''}</span></label>
+          <div class="cats-grid" id="cats-grid"></div>
+        </div>
+
+        <div class="field">
+          <label class="label">Dirección *</label>
+          <input class="input" id="direccion" value="${direccion}" placeholder="Ej: Av. Corrientes 1234">
+        </div>
+
+        <div class="field">
+          <label class="label">Teléfono</label>
+          <input class="input" id="telefono" value="${telefono}" placeholder="Ej: 11 1234-5678" type="tel">
+        </div>
+
+        <div class="field">
+          <label class="label">Horario</label>
+          <input class="input" id="horario" value="${horario}" placeholder="Ej: Lun-Vie 9 a 18hs">
+        </div>
+
+        <div class="field">
+          <label class="label">Descripción *</label>
+          <textarea class="input" id="descripcion" placeholder="Contá sobre tu local...">${descripcion}</textarea>
+        </div>
+
+        <button class="btn-guardar" id="btn-guardar" onclick="guardar()">
+          ${local ? 'Guardar cambios' : 'Publicar local'}
+        </button>
+      </div>
+    `;
+
+    renderFotos();
+    renderCategorias();
+    initMapa();
+  }
+
+  function renderFotos() {
+    const row = document.getElementById('fotos-row');
+    if (!row) return;
+    const totalFotos = fotosGuardadas.length + fotosNuevas.length;
+
+    let html = fotosGuardadas.map((url, i) => `
+      <div class="foto-wrap">
+        <img class="foto-thumb" src="${url}">
+        <button class="foto-borrar" onclick="borrarFotoGuardada(${i})">✕</button>
+      </div>
+    `).join('');
+
+    html += fotosNuevas.map((f, i) => `
+      <div class="foto-wrap">
+        <img class="foto-thumb foto-nueva" src="${f.url}">
+        <button class="foto-borrar" onclick="borrarFotoNueva(${i})">✕</button>
+      </div>
+    `).join('');
+
+    if (totalFotos < MAX_FOTOS) {
+      html += `<button class="btn-agregar-foto" onclick="document.getElementById('input-foto').click()">+ Foto</button>
+               <input type="file" id="input-foto" accept="image/*" multiple style="display:none" onchange="agregarFotos(this)">`;
+    }
+
+    row.innerHTML = html;
+    // Actualizar título
+    const titulo = document.querySelector('.seccion-titulo');
+    if (titulo) titulo.textContent = `Fotos (${totalFotos}/${MAX_FOTOS})`;
+  }
+
+  function renderCategorias() {
+    const grid = document.getElementById('cats-grid');
+    if (!grid) return;
+    grid.innerHTML = CATEGORIAS.map(cat => `
+      <button class="cat-pill ${categorias.includes(cat) ? 'activo' : ''}" onclick="toggleCat('${cat}')">${cat}</button>
+    `).join('');
+  }
+
+  function toggleCat(cat) {
+    if (categorias.includes(cat)) {
+      categorias = categorias.filter(c => c !== cat);
+    } else {
+      categorias = [...categorias, cat];
+    }
+    renderCategorias();
+    const count = document.getElementById('cats-count');
+    if (count) count.textContent = categorias.length > 0 ? `(${categorias.length} seleccionadas)` : '';
+  }
+
+  function initMapa() {
+    const center = coords ? [coords.lat, coords.lng] : [-34.6037, -58.3816];
+    mapa = L.map('mapa-picker', { zoomControl: true }).setView(center, 15);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19, attribution: '' }).addTo(mapa);
+
+    if (coords) {
+      mapaMarker = L.marker([coords.lat, coords.lng]).addTo(mapa);
+    }
+
+    mapa.on('click', function(e) {
+      coords = { lat: e.latlng.lat, lng: e.latlng.lng };
+      if (mapaMarker) mapa.removeLayer(mapaMarker);
+      mapaMarker = L.marker([coords.lat, coords.lng]).addTo(mapa);
+      const texto = document.getElementById('coords-texto');
+      if (texto) texto.textContent = '📍 Ubicación fijada. Podés moverla haciendo click.';
+    });
+  }
+
+  function agregarFotos(input) {
+    const disponibles = MAX_FOTOS - fotosGuardadas.length - fotosNuevas.length;
+    const files = Array.from(input.files).slice(0, disponibles);
+    files.forEach(file => {
+      const url = URL.createObjectURL(file);
+      fotosNuevas.push({ file, url });
+    });
+    input.value = '';
+    renderFotos();
+  }
+
+  function borrarFotoGuardada(i) {
+    fotosGuardadas.splice(i, 1);
+    renderFotos();
+  }
+
+  function borrarFotoNueva(i) {
+    fotosNuevas.splice(i, 1);
+    renderFotos();
+  }
+
+  async function subirFotos(localId) {
+    const urls = [];
+    for (let i = 0; i < fotosNuevas.length; i++) {
+      const { file } = fotosNuevas[i];
+      const fileName = `publicaciones/${localId}/${Date.now()}-${i}.jpg`;
+      try {
+        const { error } = await db.storage.from('fotos-locales').upload(fileName, file, { contentType: file.type, upsert: true });
+        if (error) throw error;
+        const { data } = db.storage.from('fotos-locales').getPublicUrl(fileName);
+        urls.push(data.publicUrl);
+      } catch (e) {
+        console.error('Error subiendo foto:', e);
+      }
+    }
+    return urls;
+  }
+
+  function mostrarMsg(texto, tipo) {
+    const el = document.getElementById('msg');
+    if (!el) return;
+    el.textContent = texto;
+    el.className = `msg ${tipo}`;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  async function guardar() {
+    const nombre = document.getElementById('nombre').value.trim();
+    const descripcion = document.getElementById('descripcion').value.trim();
+    const direccion = document.getElementById('direccion').value.trim();
+    const telefono = document.getElementById('telefono').value.trim();
+    const horario = document.getElementById('horario').value.trim();
+    const btn = document.getElementById('btn-guardar');
+
+    if (!nombre || categorias.length === 0 || !descripcion || !direccion) {
+      mostrarMsg('Completá nombre, al menos una categoría, descripción y dirección.', 'error');
+      return;
+    }
+    if (!coords) {
+      mostrarMsg('Hacé click en el mapa para fijar la ubicación.', 'error');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Guardando...';
+
+    try {
+      const idParaSubir = local?.id || session.user.id;
+      const urlsNuevas = fotosNuevas.length > 0 ? await subirFotos(idParaSubir) : [];
+      const todasLasFotos = [...fotosGuardadas, ...urlsNuevas];
+
+      if (local) {
+        const { error } = await db.from('locales').update({
+          nombre, categoria: categorias, descripcion, direccion, telefono, horario,
+          fotos: todasLasFotos, lat: coords.lat, lng: coords.lng,
+          updated_at: new Date().toISOString(), tiene_novedad: true,
+        }).eq('id', local.id);
+        if (error) throw error;
+      } else {
+        const { data: nuevoLocal, error } = await db.from('locales').insert({
+          owner_id: session.user.id,
+          nombre, categoria: categorias, descripcion, direccion, telefono, horario,
+          fotos: todasLasFotos, lat: coords.lat, lng: coords.lng,
+          activo: true,
+          free_until: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
+        }).select().single();
+        if (error) throw error;
+        local = nuevoLocal;
+      }
+
+      fotosNuevas = [];
+      await cargarLocal();
+      mostrarMsg('✅ ¡Guardado correctamente!', 'ok');
+    } catch (err) {
+      mostrarMsg('Error: ' + (err.message || 'No se pudo guardar'), 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = local ? 'Guardar cambios' : 'Publicar local';
+    }
+  }
+
+  async function cerrarSesion() {
+    await db.auth.signOut();
+    window.location.href = 'duenos.html';
+  }
+
+  init();
+</script>
+</body>
+</html>
