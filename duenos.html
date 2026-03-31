@@ -247,7 +247,7 @@
       if (error) {
         mostrarMsg('Email o contraseña incorrectos.', 'error');
       } else {
-        mostrarPanel();
+        window.location.href = 'panel.html';
       }
     } else {
       const { data, error } = await db.auth.signUp({ email, password });
@@ -282,7 +282,7 @@
 
   // Chequear si ya está logueado
   db.auth.getSession().then(({ data: { session } }) => {
-    if (session) mostrarPanel();
+    if (session) window.location.href = 'panel.html';
   });
 </script>
 </body>
