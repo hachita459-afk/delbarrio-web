@@ -20,14 +20,14 @@
     .vista-toggle { display: flex; justify-content: center; gap: 8px; padding: 16px; background: #2a9d8f; }
     .vista-btn { padding: 8px 24px; border-radius: 20px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); transition: all 0.15s; }
     .vista-btn.activo { background: rgba(255,255,255,0.35); color: #fff; }
-    .filtro-wrap { padding: 12px 16px; background: #fff; border-bottom: 1px solid #eee; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
-    .filtro-wrap::-webkit-scrollbar { display: none; }
-    .filtro-pill { padding: 6px 16px; border-radius: 20px; border: none; font-size: 13px; font-weight: 500; cursor: pointer; background: #f0f0f0; color: #555; white-space: nowrap; transition: all 0.15s; }
-    .filtro-pill.activo { background: #2a9d8f; color: #fff; }
     #mapa-wrap { position: relative; }
     #mapa { height: calc(100vh - 140px); width: 100%; }
     #btn-filtro-mapa { position: absolute; top: 16px; left: 16px; z-index: 500; background: #fff; border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
     #lista-wrap { display: none; padding: 16px; max-width: 800px; margin: 0 auto; }
+    .filtro-wrap { padding: 12px 16px; background: #fff; border-bottom: 1px solid #eee; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+    .filtro-wrap::-webkit-scrollbar { display: none; }
+    .filtro-pill { padding: 6px 16px; border-radius: 20px; border: none; font-size: 13px; font-weight: 500; cursor: pointer; background: #f0f0f0; color: #555; white-space: nowrap; transition: all 0.15s; }
+    .filtro-pill.activo { background: #2a9d8f; color: #fff; }
     .card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor: pointer; text-decoration: none; display: block; transition: transform 0.1s; }
     .card:hover { transform: translateY(-2px); }
     .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
@@ -71,43 +71,35 @@
     <div class="modal-grid" id="modal-grid"></div>
   </div>
 </div>
-
 <script>
   const SUPABASE_URL = 'https://dlvtgrjmeyuxgojryafr.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_R2C9F9NOjCNx765jp90DbA_hr70zqPT';
   const { createClient } = supabase;
   const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const CATEGORIAS = ['Todos','Restaurant','Peluqueria','Ropa','Odontologia','Supermercado','Kiosko','Carniceria','Verduleria','Panaderia','Fiambreria','Iglesia','Heladeria','Comida Rapida','Loteria','Bicicleteria','Servicio Tecnico','Libreria','Cafeteria','Relojeria y Joyas','Floreria','Taller Mecanico Motos','Taller Mecanico Autos','Gomeria','Centro de Estetica','Consultorio Legal','Consultorio Medico','Consultorio Contable','Articulos de Libreria','Otros'];
-
+  let CATEGORIAS = ['Todos'];
   let locales = [];
   let filtro = 'Todos';
   let vista = 'mapa';
-  let mapa, userLat = null, userLng = null;
   let markers = [];
-  let userMarker = null;
 
-  mapa = L.map('mapa', { zoomControl: true }).setView([-34.6037, -58.3816], 13);
+  const mapa = L.map('mapa', { zoomControl: true }).setView([-34.6037, -58.3816], 13);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19, attribution: '' }).addTo(mapa);
 
-  // Sin pin de usuario en web — GPS de desktop no es preciso
-
   async function cargar() {
-    const { data } = await db.from('locales').select('*').eq('activo', true).eq('suspendido', false);
+    const [{ data: cats }, { data }] = await Promise.all([
+      db.from('categorias').select('nombre').order('orden'),
+      db.from('locales').select('*').eq('activo', true).eq('suspendido', false)
+    ]);
+    if (cats) CATEGORIAS = ['Todos', ...cats.map(c => c.nombre)];
     locales = data || [];
-
-    // Centrar el mapa en el centro de los locales
     const conCoords = locales.filter(l => l.lat && l.lng);
     if (conCoords.length > 0) {
       const avgLat = conCoords.reduce((s, l) => s + parseFloat(l.lat), 0) / conCoords.length;
       const avgLng = conCoords.reduce((s, l) => s + parseFloat(l.lng), 0) / conCoords.length;
       mapa.setView([avgLat, avgLng], 14);
     }
-
-    renderMapa();
-    renderLista();
-    renderFiltroLista();
-    renderModalGrid();
+    renderMapa(); renderLista(); renderFiltroLista(); renderModalGrid();
   }
 
   function localesFiltrados() {
@@ -124,11 +116,9 @@
       const html = novedad
         ? '<div style="position:relative;width:16px;height:16px;"><div style="position:absolute;top:-5px;left:-5px;width:26px;height:26px;border-radius:50%;background:rgba(251,146,60,0.4);animation:pulse 1.4s ease-in-out infinite;"></div><div style="width:16px;height:16px;background:#fb923c;border-radius:50%;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);position:relative;z-index:1;"></div></div>'
         : '<div style="width:14px;height:14px;background:#2563eb;border-radius:50%;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3);"></div>';
-
       const marker = L.marker([parseFloat(l.lat), parseFloat(l.lng)], {
-        icon: L.divIcon({ html: html, iconSize: [16,16], iconAnchor: [8,8], className: '' })
+        icon: L.divIcon({ html, iconSize: [16,16], iconAnchor: [8,8], className: '' })
       }).addTo(mapa);
-
       marker.bindPopup(
         '<div style="text-align:center;padding:8px;min-width:180px;">' +
         (novedad ? '<div style="background:#fff3e0;color:#c2410c;font-size:11px;font-weight:600;padding:3px 8px;border-radius:10px;display:inline-block;margin-bottom:6px;">🔔 ¡Novedad!</div><br>' : '') +
@@ -157,13 +147,13 @@
 
   function renderFiltroLista() {
     document.getElementById('filtro-lista').innerHTML = CATEGORIAS.map(cat =>
-      '<button class="filtro-pill ' + (filtro === cat ? 'activo' : '') + '" onclick="setFiltro(\'' + cat + '\')">' + cat + '</button>'
+      '<button class="filtro-pill ' + (filtro === cat ? 'activo' : '') + '" onclick="setFiltro(\'' + cat.replace(/'/g, "\\'") + '\')">' + cat + '</button>'
     ).join('');
   }
 
   function renderModalGrid() {
     document.getElementById('modal-grid').innerHTML = CATEGORIAS.map(cat =>
-      '<button class="modal-pill ' + (filtro === cat ? 'activo' : '') + '" onclick="setFiltroMapa(\'' + cat + '\')">' + cat + '</button>'
+      '<button class="modal-pill ' + (filtro === cat ? 'activo' : '') + '" onclick="setFiltroMapa(\'' + cat.replace(/'/g, "\\'") + '\')">' + cat + '</button>'
     ).join('');
   }
 
