@@ -90,20 +90,7 @@
   mapa = L.map('mapa', { zoomControl: true }).setView([-34.6037, -58.3816], 13);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19, attribution: '' }).addTo(mapa);
 
-  // Geolocalización — solo mueve el marcador, no recentra el mapa
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(pos => {
-      userLat = pos.coords.latitude;
-      userLng = pos.coords.longitude;
-      if (userMarker) mapa.removeLayer(userMarker);
-      userMarker = L.marker([userLat, userLng], {
-        icon: L.divIcon({
-          html: '<div style="width:16px;height:16px;background:#22c55e;border-radius:50%;border:3px solid white;box-shadow:0 0 0 4px rgba(34,197,94,0.3);"></div>',
-          iconSize: [16,16], iconAnchor: [8,8], className: ''
-        })
-      }).addTo(mapa);
-    }, null, { enableHighAccuracy: true, timeout: 10000 });
-  }
+  // Sin pin de usuario en web — GPS de desktop no es preciso
 
   async function cargar() {
     const { data } = await db.from('locales').select('*').eq('activo', true).eq('suspendido', false);
