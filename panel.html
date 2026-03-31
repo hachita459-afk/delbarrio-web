@@ -121,7 +121,7 @@
   const { createClient } = supabase;
   const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const CATEGORIAS = ['Restaurant','Peluqueria','Ropa','Odontologia','Supermercado','Kiosko','Carniceria','Verduleria','Panaderia','Fiambreria','Iglesia','Heladeria','Comida Rapida','Loteria','Bicicleteria','Servicio Tecnico','Libreria','Cafeteria','Relojeria y Joyas','Floreria','Taller Mecanico Motos','Taller Mecanico Autos','Gomeria','Centro de Estetica','Consultorio Legal','Consultorio Medico','Consultorio Contable','Articulos de Libreria','Otros'];
+  let CATEGORIAS = [];
   const MAX_FOTOS = 5;
 
   let session = null;
@@ -146,6 +146,9 @@
   }
 
   async function cargarLocal() {
+    const { data: cats } = await db.from('categorias').select('nombre').order('orden');
+    if (cats) CATEGORIAS = cats.map(c => c.nombre);
+
     const { data, error } = await db.from('locales').select('*').eq('owner_id', session.user.id).single();
     if (error && error.code !== 'PGRST116') {
       document.getElementById('wrap').innerHTML = '<div class="loading">Error al cargar datos.</div>';
