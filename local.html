@@ -40,6 +40,10 @@
     .desc-wrap { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
     .desc-titulo { font-size: 17px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
     .desc-texto { font-size: 15px; line-height: 1.6; color: #444; }
+    .etiquetas-wrap { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+    .etiquetas-titulo { font-size: 14px; font-weight: 600; color: #1a1a2e; margin-bottom: 10px; }
+    .etiquetas-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .etiqueta-chip { background: #f0faf9; border: 1px solid #2a9d8f; border-radius: 20px; padding: 4px 12px; font-size: 13px; color: #2a9d8f; font-weight: 500; }
     .visitas { font-size: 12px; color: #bbb; text-align: right; margin-top: 8px; }
     .error { text-align: center; padding: 80px 20px; color: #888; }
   </style>
@@ -106,6 +110,13 @@
     const telefonoHtml = l.telefono ? '<div class="quick-item"><div class="quick-label">📞 Teléfono</div><div class="quick-value"><a href="tel:' + l.telefono + '">' + l.telefono + '</a></div></div>' : '';
     const horarioHtml = l.horario ? '<div class="quick-item"><div class="quick-label">🕐 Horario</div><div class="quick-value">' + l.horario + '</div></div>' : '';
 
+    const etiquetas = Array.isArray(l.etiquetas) ? l.etiquetas : [];
+    const etiquetasHtml = etiquetas.length > 0
+      ? '<div class="etiquetas-wrap"><div class="etiquetas-titulo">🏷 Etiquetas</div><div class="etiquetas-row">' +
+        etiquetas.map(e => '<span class="etiqueta-chip">' + e + '</span>').join('') +
+        '</div></div>'
+      : '';
+
     document.getElementById('contenido').innerHTML =
       '<div class="local-wrap">' +
         '<div class="info-header">' +
@@ -118,6 +129,7 @@
         '<div class="body">' +
           ((telefonoHtml || horarioHtml) ? '<div class="quick-row">' + telefonoHtml + horarioHtml + '</div>' : '') +
           (l.descripcion ? '<div class="desc-wrap"><div class="desc-titulo">Sobre el local</div><div class="desc-texto">' + l.descripcion.replace(/\n/g, '<br>') + '</div></div>' : '') +
+          etiquetasHtml +
           '<div class="visitas">👁 ' + ((l.visitas || 0) + 1) + ' visitas</div>' +
         '</div>' +
       '</div>';
