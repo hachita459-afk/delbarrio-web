@@ -10,24 +10,89 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f8f8; }
-    header { background: #2a9d8f; padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+
+    header {
+      background: #2a9d8f;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
     .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
     .logo-icon { width: 36px; height: 36px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
     .logo-circle { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid #fff; display: flex; align-items: center; justify-content: center; }
     .logo-pin { width: 6px; height: 6px; border-radius: 50%; background: #fff; }
     .logo-text { font-size: 20px; font-weight: 700; color: #fff; }
+
+    .header-btns { display: flex; align-items: center; gap: 8px; }
+    .btn-info {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      border: 1.5px solid rgba(255,255,255,0.5);
+      color: #fff;
+      font-size: 16px;
+      font-style: italic;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
     .btn-duenos { background: #1a1a2e; color: #fff; border: none; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; }
-    .vista-toggle { display: flex; justify-content: center; gap: 8px; padding: 16px; background: #2a9d8f; }
-    .vista-btn { padding: 8px 24px; border-radius: 20px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); transition: all 0.15s; }
+
+    .subheader {
+      background: #2a9d8f;
+      padding: 0 16px 12px;
+    }
+    .search-row {
+      display: flex;
+      align-items: center;
+      background: rgba(255,255,255,0.2);
+      border-radius: 12px;
+      padding: 0 12px;
+      margin-bottom: 8px;
+    }
+    .search-row input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-size: 14px;
+      padding: 10px 0;
+    }
+    .search-row input::placeholder { color: rgba(255,255,255,0.6); }
+    .search-clear {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.8);
+      font-size: 16px;
+      cursor: pointer;
+      padding: 4px;
+      display: none;
+    }
+
+    .vista-toggle { display: flex; gap: 8px; }
+    .vista-btn { flex: 1; padding: 8px 0; border-radius: 10px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); transition: all 0.15s; }
     .vista-btn.activo { background: rgba(255,255,255,0.35); color: #fff; }
+
     #mapa-wrap { position: relative; }
     #mapa { height: calc(100vh - 140px); width: 100%; }
     #btn-filtro-mapa { position: absolute; top: 16px; left: 16px; z-index: 500; background: #fff; border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    #btn-filtro-mapa.activo { background: #2a9d8f; color: #fff; }
+
     #lista-wrap { display: none; padding: 16px; max-width: 800px; margin: 0 auto; }
+    .resultados-busqueda { font-size: 13px; color: #888; font-style: italic; margin-bottom: 12px; }
+
     .filtro-wrap { padding: 12px 16px; background: #fff; border-bottom: 1px solid #eee; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
     .filtro-wrap::-webkit-scrollbar { display: none; }
     .filtro-pill { padding: 6px 16px; border-radius: 20px; border: none; font-size: 13px; font-weight: 500; cursor: pointer; background: #f0f0f0; color: #555; white-space: nowrap; transition: all 0.15s; }
     .filtro-pill.activo { background: #2a9d8f; color: #fff; }
+
     .card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor: pointer; text-decoration: none; display: block; transition: transform 0.1s; }
     .card:hover { transform: translateY(-2px); }
     .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
@@ -35,7 +100,12 @@
     .card-novedad { background: #fb923c; color: #fff; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
     .card-categoria { font-size: 13px; color: #2a9d8f; font-weight: 500; margin-bottom: 4px; }
     .card-dir { font-size: 13px; color: #888; }
+    .etiquetas-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+    .etiqueta-chip { background: #f0faf9; border: 1px solid #2a9d8f; border-radius: 20px; padding: 2px 10px; font-size: 11px; color: #2a9d8f; font-weight: 500; }
+
     .sin-locales { text-align: center; padding: 60px 20px; color: #aaa; font-size: 15px; }
+
+    /* Modal filtro */
     .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 2000; align-items: flex-end; justify-content: center; }
     .overlay.visible { display: flex; }
     .modal-filtro { background: #fff; border-radius: 20px 20px 0 0; padding: 24px; width: 100%; max-width: 600px; max-height: 70vh; overflow-y: auto; }
@@ -43,34 +113,69 @@
     .modal-grid { display: flex; flex-wrap: wrap; gap: 8px; }
     .modal-pill { padding: 10px 16px; border-radius: 10px; border: none; font-size: 13px; font-weight: 500; cursor: pointer; background: #f0f0f0; color: #555; transition: all 0.15s; }
     .modal-pill.activo { background: #2a9d8f; color: #fff; font-weight: 600; }
+
+    /* Modal contacto */
+    .modal-contacto { background: #fff; border-radius: 20px 20px 0 0; padding: 28px; width: 100%; max-width: 600px; text-align: center; }
+    .modal-contacto-titulo { font-size: 18px; font-weight: 700; color: #1a1a2e; margin-bottom: 10px; }
+    .modal-contacto-texto { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 20px; }
+    .modal-contacto-btn { display: block; background: #f0faf9; border: 1px solid #2a9d8f; border-radius: 12px; padding: 14px 20px; color: #2a9d8f; font-size: 14px; font-weight: 600; text-decoration: none; margin-bottom: 12px; }
+    .modal-contacto-cerrar { background: none; border: none; color: #aaa; font-size: 14px; cursor: pointer; padding: 8px; }
   </style>
 </head>
 <body>
+
 <header>
   <a class="logo" href="index.html">
     <div class="logo-icon"><div class="logo-circle"><div class="logo-pin"></div></div></div>
     <span class="logo-text">Del Barrio</span>
   </a>
-  <a class="btn-duenos" href="duenos.html">DUEÑOS</a>
+  <div class="header-btns">
+    <button class="btn-info" onclick="abrirContacto()">i</button>
+    <a class="btn-duenos" href="duenos.html">DUEÑOS</a>
+  </div>
 </header>
-<div class="vista-toggle">
-  <button class="vista-btn activo" onclick="setVista('mapa', this)">🗺 Mapa</button>
-  <button class="vista-btn" onclick="setVista('lista', this)">☰ Lista</button>
+
+<div class="subheader">
+  <div class="search-row">
+    <span style="color:rgba(255,255,255,0.7);margin-right:8px;">🔍</span>
+    <input type="text" id="buscador" placeholder="Buscar por nombre o etiqueta..." oninput="onBusqueda()" autocapitalize="none">
+    <button class="search-clear" id="search-clear" onclick="limpiarBusqueda()">✕</button>
+  </div>
+  <div class="vista-toggle">
+    <button class="vista-btn activo" onclick="setVista('mapa', this)">🗺 Mapa</button>
+    <button class="vista-btn" onclick="setVista('lista', this)">☰ Lista</button>
+  </div>
 </div>
+
 <div id="mapa-wrap">
   <div id="mapa"></div>
   <button id="btn-filtro-mapa" onclick="abrirFiltro()">⚙ Filtrar</button>
 </div>
+
 <div id="lista-wrap">
   <div class="filtro-wrap" id="filtro-lista"></div>
+  <div class="resultados-busqueda" id="resultados-texto" style="display:none"></div>
   <div id="lista-contenido"></div>
 </div>
-<div class="overlay" id="overlay" onclick="if(event.target===this) cerrarFiltro()">
+
+<!-- Modal filtro -->
+<div class="overlay" id="overlay-filtro" onclick="if(event.target===this) cerrarFiltro()">
   <div class="modal-filtro">
     <div class="modal-titulo">Filtrar por categoría</div>
     <div class="modal-grid" id="modal-grid"></div>
   </div>
 </div>
+
+<!-- Modal contacto -->
+<div class="overlay" id="overlay-contacto" onclick="if(event.target===this) cerrarContacto()">
+  <div class="modal-contacto">
+    <div class="modal-contacto-titulo">ℹ️ Contacto</div>
+    <div class="modal-contacto-texto">¿Tenés consultas, sugerencias o querés reportar un problema?</div>
+    <a class="modal-contacto-btn" href="mailto:dbshops2026@gmail.com?subject=Consulta Del Barrio">✉️ dbshops2026@gmail.com</a>
+    <button class="modal-contacto-cerrar" onclick="cerrarContacto()">Cerrar</button>
+  </div>
+</div>
+
 <script>
   const SUPABASE_URL = 'https://dlvtgrjmeyuxgojryafr.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_R2C9F9NOjCNx765jp90DbA_hr70zqPT';
@@ -80,6 +185,7 @@
   let CATEGORIAS = ['Todos'];
   let locales = [];
   let filtro = 'Todos';
+  let busqueda = '';
   let vista = 'mapa';
   let markers = [];
 
@@ -103,7 +209,35 @@
   }
 
   function localesFiltrados() {
-    return filtro === 'Todos' ? locales : locales.filter(l => Array.isArray(l.categoria) ? l.categoria.includes(filtro) : l.categoria === filtro);
+    return locales.filter(l => {
+      if (filtro !== 'Todos') {
+        const cumple = Array.isArray(l.categoria) ? l.categoria.includes(filtro) : l.categoria === filtro;
+        if (!cumple) return false;
+      }
+      if (busqueda.trim().length > 0) {
+        const t = busqueda.trim().toLowerCase();
+        const enNombre = (l.nombre || '').toLowerCase().includes(t);
+        const enEtiquetas = Array.isArray(l.etiquetas) ? l.etiquetas.some(e => e.toLowerCase().includes(t)) : false;
+        const enDescripcion = (l.descripcion || '').toLowerCase().includes(t);
+        if (!enNombre && !enEtiquetas && !enDescripcion) return false;
+      }
+      return true;
+    });
+  }
+
+  function onBusqueda() {
+    busqueda = document.getElementById('buscador').value;
+    document.getElementById('search-clear').style.display = busqueda.length > 0 ? 'block' : 'none';
+    if (vista === 'mapa') setVista('lista', document.querySelectorAll('.vista-btn')[1]);
+    renderLista(); renderMapa();
+  }
+
+  function limpiarBusqueda() {
+    busqueda = '';
+    document.getElementById('buscador').value = '';
+    document.getElementById('search-clear').style.display = 'none';
+    document.getElementById('resultados-texto').style.display = 'none';
+    renderLista(); renderMapa();
   }
 
   function renderMapa() {
@@ -134,15 +268,34 @@
   function renderLista() {
     const wrap = document.getElementById('lista-contenido');
     const items = localesFiltrados();
-    if (items.length === 0) { wrap.innerHTML = '<div class="sin-locales">No hay locales en esta categoría.</div>'; return; }
-    wrap.innerHTML = items.map(l =>
-      '<a class="card" href="local.html?id=' + l.id + '">' +
+
+    const resTexto = document.getElementById('resultados-texto');
+    if (busqueda.trim().length > 0) {
+      resTexto.style.display = 'block';
+      resTexto.textContent = items.length === 0
+        ? `Sin resultados para "${busqueda}"`
+        : `${items.length} resultado${items.length === 1 ? '' : 's'} para "${busqueda}"`;
+    } else {
+      resTexto.style.display = 'none';
+    }
+
+    if (items.length === 0) {
+      wrap.innerHTML = '<div class="sin-locales">No hay locales en esta categoría.</div>';
+      return;
+    }
+
+    wrap.innerHTML = items.map(l => {
+      const etiquetasHtml = Array.isArray(l.etiquetas) && l.etiquetas.length > 0
+        ? '<div class="etiquetas-row">' + l.etiquetas.slice(0, 4).map(e => '<span class="etiqueta-chip">' + e + '</span>').join('') + '</div>'
+        : '';
+      return '<a class="card" href="local.html?id=' + l.id + '">' +
         '<div class="card-header"><span class="card-nombre">' + l.nombre + '</span>' +
         (l.tiene_novedad ? '<span class="card-novedad">🔔 Novedad</span>' : '') + '</div>' +
         '<div class="card-categoria">' + (Array.isArray(l.categoria) ? l.categoria.join(' · ') : l.categoria) + '</div>' +
         '<div class="card-dir">📍 ' + (l.direccion || '') + '</div>' +
-      '</a>'
-    ).join('');
+        etiquetasHtml +
+      '</a>';
+    }).join('');
   }
 
   function renderFiltroLista() {
@@ -160,7 +313,9 @@
   function setFiltro(cat) { filtro = cat; renderFiltroLista(); renderLista(); }
   function setFiltroMapa(cat) {
     filtro = cat;
-    document.getElementById('btn-filtro-mapa').textContent = cat === 'Todos' ? '⚙ Filtrar' : '⚙ ' + cat;
+    const btn = document.getElementById('btn-filtro-mapa');
+    btn.textContent = cat === 'Todos' ? '⚙ Filtrar' : '⚙ ' + cat;
+    btn.classList.toggle('activo', cat !== 'Todos');
     renderMapa(); renderModalGrid(); cerrarFiltro();
   }
 
@@ -173,8 +328,10 @@
     if (v === 'mapa') setTimeout(() => mapa.invalidateSize(), 100);
   }
 
-  function abrirFiltro() { document.getElementById('overlay').classList.add('visible'); }
-  function cerrarFiltro() { document.getElementById('overlay').classList.remove('visible'); }
+  function abrirFiltro() { document.getElementById('overlay-filtro').classList.add('visible'); }
+  function cerrarFiltro() { document.getElementById('overlay-filtro').classList.remove('visible'); }
+  function abrirContacto() { document.getElementById('overlay-contacto').classList.add('visible'); }
+  function cerrarContacto() { document.getElementById('overlay-contacto').classList.remove('visible'); }
 
   const style = document.createElement('style');
   style.textContent = '@keyframes pulse { 0%{transform:scale(1);opacity:0.8} 50%{transform:scale(1.5);opacity:0.3} 100%{transform:scale(1);opacity:0.8} }';
