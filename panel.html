@@ -30,6 +30,19 @@
 
     .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 60px; }
 
+    /* ID BANNER */
+    .id-banner {
+      background: #f0f4ff;
+      border: 1px solid #dde3f8;
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .id-label { font-size: 11px; color: #888; font-weight: 500; margin-bottom: 4px; }
+    .id-numero { font-size: 32px; font-weight: 800; color: #1a1a2e; letter-spacing: 1px; }
+    .id-hint { font-size: 11px; color: #aaa; margin-top: 4px; }
+
     /* BANNER */
     .banner { padding: 12px 16px; border-radius: 12px; margin-bottom: 20px; font-size: 13px; font-weight: 500; }
     .banner-ok { background: #d0f0ec; color: #2a9d8f; }
@@ -51,13 +64,11 @@
 
     /* MAPA */
     #mapa-picker { height: 260px; border-radius: 12px; overflow: hidden; margin-bottom: 12px; }
-    .btn-ubicar { width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 12px; }
-    .btn-ubicar-default { background: #1a1a2e; color: #fff; }
-    .btn-ubicar-ok { background: #2d6a4f; color: #fff; }
 
     /* CAMPOS */
     .field { margin-bottom: 16px; }
     .label { font-size: 13px; color: #666; font-weight: 500; margin-bottom: 6px; display: block; }
+    .label-hint { font-size: 11px; color: #aaa; margin-top: 4px; }
     .input {
       width: 100%; border: 1.5px solid #ddd; border-radius: 10px;
       padding: 12px 14px; font-size: 15px; background: #fafafa; outline: none;
@@ -75,6 +86,29 @@
     }
     .cat-pill.activo { background: #1a1a2e; color: #fff; }
 
+    /* TYC CHECKBOX */
+    .tyc-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      margin-top: 8px;
+    }
+    .checkbox-custom {
+      width: 24px; height: 24px;
+      border-radius: 6px;
+      border: 2px solid #ddd;
+      background: #fafafa;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+    .checkbox-custom.activo { border-color: #2a9d8f; background: #2a9d8f; }
+    .checkbox-custom.activo::after { content: '✓'; color: #fff; font-size: 14px; font-weight: 700; }
+    .tyc-texto { font-size: 13px; color: #555; line-height: 1.5; }
+    .tyc-link { color: #2a9d8f; font-weight: 600; }
+
     /* BOTÓN GUARDAR */
     .btn-guardar {
       width: 100%; background: #1a1a2e; color: #fff; border: none;
@@ -91,7 +125,6 @@
 
     .loading { text-align: center; padding: 60px; color: #888; }
 
-    /* SUSPENDIDO */
     .suspendido-overlay {
       background: #ffe0e0; border-radius: 16px; padding: 40px 24px;
       text-align: center; margin-bottom: 16px;
@@ -118,6 +151,7 @@
 <script>
   const SUPABASE_URL = 'https://dlvtgrjmeyuxgojryafr.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_R2C9F9NOjCNx765jp90DbA_hr70zqPT';
+  const TYC_URL = 'https://hachita459-afk.github.io/delbarrio-web/tyc.html';
   const { createClient } = supabase;
   const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -130,8 +164,9 @@
   let mapa = null;
   let mapaMarker = null;
   let fotosGuardadas = [];
-  let fotosNuevas = []; // {file, url}
+  let fotosNuevas = [];
   let categorias = [];
+  let aceptaTyC = false;
 
   async function init() {
     const { data: { session: s } } = await db.auth.getSession();
@@ -160,6 +195,7 @@
       categorias = Array.isArray(local.categoria) ? local.categoria : (local.categoria ? [local.categoria] : []);
       if (local.lat && local.lng) coords = { lat: parseFloat(local.lat), lng: parseFloat(local.lng) };
     }
+    aceptaTyC = false;
     renderPanel();
   }
 
@@ -180,6 +216,16 @@
     const porVencer = dias > 0 && dias <= 7;
     const vencido = local && !local.activo && dias <= 0;
 
+    let idBannerHtml = '';
+    if (local?.local_id) {
+      idBannerHtml = `
+        <div class="id-banner">
+          <div class="id-label">Tu número de local</div>
+          <div class="id-numero">#${local.local_id}</div>
+          <div class="id-hint">Mencioná este número si contactás soporte</div>
+        </div>`;
+    }
+
     let bannerHtml = '';
     if (local && dias > 0 && !porVencer) {
       bannerHtml = `<div class="banner banner-ok">✅ Período gratis activo — ${dias} día${dias === 1 ? '' : 's'} restantes</div>`;
@@ -194,15 +240,17 @@
     const direccion = local?.direccion || '';
     const telefono = local?.telefono || '';
     const horario = local?.horario || '';
+    const etiquetas = Array.isArray(local?.etiquetas) ? local.etiquetas.join(', ') : '';
     const totalFotos = fotosGuardadas.length + fotosNuevas.length;
 
     wrap.innerHTML = `
+      ${idBannerHtml}
       ${bannerHtml}
       <div class="msg" id="msg"></div>
 
       <!-- FOTOS -->
       <div class="seccion">
-        <div class="seccion-titulo">Fotos (${totalFotos}/${MAX_FOTOS})</div>
+        <div class="seccion-titulo" id="fotos-titulo">Fotos (${totalFotos}/${MAX_FOTOS})</div>
         <div class="fotos-row" id="fotos-row"></div>
       </div>
 
@@ -245,11 +293,25 @@
         </div>
 
         <div class="field">
+          <label class="label">Etiquetas</label>
+          <input class="input" id="etiquetas" value="${etiquetas}" placeholder="Ej: delivery, sin tacc, estacionamiento" autocapitalize="none">
+          <div class="label-hint">Separadas por coma. Los usuarios van a poder buscar por estas palabras.</div>
+        </div>
+
+        <div class="field">
           <label class="label">Descripción *</label>
           <textarea class="input" id="descripcion" placeholder="Contá sobre tu local...">${descripcion}</textarea>
         </div>
 
-        <button class="btn-guardar" id="btn-guardar" onclick="guardar()">
+        <!-- TYC -->
+        <div class="tyc-row">
+          <div class="checkbox-custom" id="checkbox-tyc" onclick="toggleTyC()"></div>
+          <div class="tyc-texto">
+            Acepto los <a class="tyc-link" href="${TYC_URL}" target="_blank">Términos y Condiciones</a> de Del Barrio
+          </div>
+        </div>
+
+        <button class="btn-guardar" id="btn-guardar" onclick="guardar()" disabled>
           ${local ? 'Guardar cambios' : 'Publicar local'}
         </button>
       </div>
@@ -258,6 +320,14 @@
     renderFotos();
     renderCategorias();
     initMapa();
+  }
+
+  function toggleTyC() {
+    aceptaTyC = !aceptaTyC;
+    const checkbox = document.getElementById('checkbox-tyc');
+    const btn = document.getElementById('btn-guardar');
+    checkbox.classList.toggle('activo', aceptaTyC);
+    btn.disabled = !aceptaTyC;
   }
 
   function renderFotos() {
@@ -285,8 +355,7 @@
     }
 
     row.innerHTML = html;
-    // Actualizar título
-    const titulo = document.querySelector('.seccion-titulo');
+    const titulo = document.getElementById('fotos-titulo');
     if (titulo) titulo.textContent = `Fotos (${totalFotos}/${MAX_FOTOS})`;
   }
 
@@ -374,11 +443,18 @@
   }
 
   async function guardar() {
+    if (!aceptaTyC) {
+      mostrarMsg('Debés aceptar los Términos y Condiciones para guardar.', 'error');
+      return;
+    }
+
     const nombre = document.getElementById('nombre').value.trim();
     const descripcion = document.getElementById('descripcion').value.trim();
     const direccion = document.getElementById('direccion').value.trim();
     const telefono = document.getElementById('telefono').value.trim();
     const horario = document.getElementById('horario').value.trim();
+    const etiquetasRaw = document.getElementById('etiquetas').value;
+    const etiquetas = etiquetasRaw.split(',').map(e => e.trim().toLowerCase()).filter(e => e.length > 0);
     const btn = document.getElementById('btn-guardar');
 
     if (!nombre || categorias.length === 0 || !descripcion || !direccion) {
@@ -401,6 +477,7 @@
       if (local) {
         const { error } = await db.from('locales').update({
           nombre, categoria: categorias, descripcion, direccion, telefono, horario,
+          etiquetas,
           fotos: todasLasFotos, lat: coords.lat, lng: coords.lng,
           updated_at: new Date().toISOString(), tiene_novedad: true,
         }).eq('id', local.id);
@@ -409,6 +486,7 @@
         const { data: nuevoLocal, error } = await db.from('locales').insert({
           owner_id: session.user.id,
           nombre, categoria: categorias, descripcion, direccion, telefono, horario,
+          etiquetas,
           fotos: todasLasFotos, lat: coords.lat, lng: coords.lng,
           activo: true,
           free_until: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
@@ -418,11 +496,11 @@
       }
 
       fotosNuevas = [];
+      aceptaTyC = false;
       await cargarLocal();
       mostrarMsg('✅ ¡Guardado correctamente!', 'ok');
     } catch (err) {
       mostrarMsg('Error: ' + (err.message || 'No se pudo guardar'), 'error');
-    } finally {
       btn.disabled = false;
       btn.textContent = local ? 'Guardar cambios' : 'Publicar local';
     }
