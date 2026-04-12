@@ -105,7 +105,6 @@
 
     .sin-locales { text-align: center; padding: 60px 20px; color: #aaa; font-size: 15px; }
 
-    /* Modal filtro */
     .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 2000; align-items: flex-end; justify-content: center; }
     .overlay.visible { display: flex; }
     .modal-filtro { background: #fff; border-radius: 20px 20px 0 0; padding: 24px; width: 100%; max-width: 600px; max-height: 70vh; overflow-y: auto; }
@@ -114,12 +113,14 @@
     .modal-pill { padding: 10px 16px; border-radius: 10px; border: none; font-size: 13px; font-weight: 500; cursor: pointer; background: #f0f0f0; color: #555; transition: all 0.15s; }
     .modal-pill.activo { background: #2a9d8f; color: #fff; font-weight: 600; }
 
-    /* Modal contacto */
     .modal-contacto { background: #fff; border-radius: 20px 20px 0 0; padding: 28px; width: 100%; max-width: 600px; text-align: center; }
     .modal-contacto-titulo { font-size: 18px; font-weight: 700; color: #1a1a2e; margin-bottom: 10px; }
     .modal-contacto-texto { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 20px; }
     .modal-contacto-btn { display: block; background: #f0faf9; border: 1px solid #2a9d8f; border-radius: 12px; padding: 14px 20px; color: #2a9d8f; font-size: 14px; font-weight: 600; text-decoration: none; margin-bottom: 12px; }
     .modal-contacto-cerrar { background: none; border: none; color: #aaa; font-size: 14px; cursor: pointer; padding: 8px; }
+    .modal-links { display: flex; gap: 16px; justify-content: center; margin-top: 8px; margin-bottom: 4px; }
+    .modal-links a { font-size: 13px; color: #2a9d8f; text-decoration: none; }
+    .modal-links a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -172,6 +173,10 @@
     <div class="modal-contacto-titulo">ℹ️ Contacto</div>
     <div class="modal-contacto-texto">¿Tenés consultas, sugerencias o querés reportar un problema?</div>
     <a class="modal-contacto-btn" href="mailto:dbshops2026@gmail.com?subject=Consulta Del Barrio">✉️ dbshops2026@gmail.com</a>
+    <div class="modal-links">
+      <a href="privacidad.html">Política de privacidad</a>
+      <a href="delete-account.html">Eliminar cuenta</a>
+    </div>
     <button class="modal-contacto-cerrar" onclick="cerrarContacto()">Cerrar</button>
   </div>
 </div>
