@@ -17,11 +17,13 @@
     .btn-volver { background: rgba(255,255,255,0.2); color: #fff; border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; }
     .loading { display: flex; align-items: center; justify-content: center; height: 60vh; font-size: 16px; color: #888; }
     .local-wrap { max-width: 680px; margin: 0 auto; padding-bottom: 40px; }
-    .info-header { background: #fff; padding: 20px; margin-bottom: 12px; }
+    .info-header { background: #fff; padding: 20px; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 12px; }
+    .info-header-text { flex: 1; }
     .nombre { font-size: 26px; font-weight: 700; color: #1a1a2e; margin-bottom: 6px; }
     .categoria { font-size: 14px; color: #2a9d8f; font-weight: 500; margin-bottom: 4px; }
     .direccion { font-size: 14px; color: #888; }
-    .novedad-badge { display: inline-block; background: #fff3e0; color: #c2410c; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px; margin-bottom: 10px; }
+    .btn-corazon { width: 42px; height: 42px; border-radius: 50%; background: #f0f0f0; border: none; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); transition: transform 0.15s; }
+    .btn-corazon:hover { transform: scale(1.1); }
     .fotos-wrap { position: relative; background: #1a1a2e; }
     .foto-visible { width: 100%; max-height: 480px; object-fit: contain; display: block; background: #1a1a2e; }
     .sin-foto { height: 200px; display: flex; align-items: center; justify-content: center; font-size: 72px; font-weight: 700; color: #fff; }
@@ -66,6 +68,29 @@
 
   let fotoIdx = 0;
   let fotosArr = [];
+  let localId = null;
+
+  // localStorage helpers
+  function getFavoritos() {
+    try { return new Set(JSON.parse(localStorage.getItem('locales_favoritos') || '[]')); } catch { return new Set(); }
+  }
+  function toggleFavorito() {
+    const favs = getFavoritos();
+    const idStr = String(localId);
+    if (favs.has(idStr)) favs.delete(idStr); else favs.add(idStr);
+    localStorage.setItem('locales_favoritos', JSON.stringify([...favs]));
+    const esFav = favs.has(idStr);
+    document.getElementById('btn-corazon').textContent = esFav ? '❤️' : '🤍';
+  }
+  function guardarVisita(id) {
+    try {
+      const visitados = JSON.parse(localStorage.getItem('locales_visitados') || '[]');
+      if (!visitados.includes(String(id))) {
+        visitados.push(String(id));
+        localStorage.setItem('locales_visitados', JSON.stringify(visitados));
+      }
+    } catch {}
+  }
 
   function irFoto(i) {
     if (i < 0 || i >= fotosArr.length) return;
@@ -82,9 +107,14 @@
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
     if (!id) { mostrarError('No se especificó un local.'); return; }
+    localId = id;
     const { data, error } = await db.from('locales').select('*').eq('id', id).single();
     if (error || !data) { mostrarError('Local no encontrado.'); return; }
+
+    // Actualizar visitas en Supabase y localStorage
     await db.from('locales').update({ visitas: (data.visitas || 0) + 1, tiene_novedad: false }).eq('id', id);
+    guardarVisita(id);
+
     document.title = 'Del Barrio — ' + data.nombre;
     renderLocal(data);
   }
@@ -94,6 +124,7 @@
     const color = COLORES[cats[0]] || '#888';
     fotosArr = l.fotos || [];
     const inicial = (l.nombre || '?')[0].toUpperCase();
+    const esFav = getFavoritos().has(String(l.id));
 
     let fotosHtml = '';
     if (fotosArr.length > 0) {
@@ -120,10 +151,12 @@
     document.getElementById('contenido').innerHTML =
       '<div class="local-wrap">' +
         '<div class="info-header">' +
-          (l.tiene_novedad ? '<div class="novedad-badge">🔔 ¡Novedad!</div>' : '') +
-          '<div class="nombre">' + l.nombre + '</div>' +
-          '<div class="categoria">' + cats.join(' · ') + '</div>' +
-          '<div class="direccion">📍 ' + (l.direccion || '') + '</div>' +
+          '<div class="info-header-text">' +
+            '<div class="nombre">' + l.nombre + '</div>' +
+            '<div class="categoria">' + cats.join(' · ') + '</div>' +
+            '<div class="direccion">📍 ' + (l.direccion || '') + '</div>' +
+          '</div>' +
+          '<button class="btn-corazon" id="btn-corazon" onclick="toggleFavorito()">' + (esFav ? '❤️' : '🤍') + '</button>' +
         '</div>' +
         fotosHtml +
         '<div class="body">' +
