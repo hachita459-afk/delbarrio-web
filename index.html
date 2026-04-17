@@ -84,6 +84,8 @@
     #mapa { height: calc(100vh - 140px); width: 100%; }
     #btn-filtro-mapa { position: absolute; top: 16px; left: 16px; z-index: 500; background: #fff; border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
     #btn-filtro-mapa.activo { background: #2a9d8f; color: #fff; }
+    #btn-favoritos-mapa { position: absolute; top: 16px; right: 16px; z-index: 500; background: #fff; border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    #btn-favoritos-mapa.activo { background: #e63939; color: #fff; }
 
     #lista-wrap { display: none; padding: 16px; max-width: 800px; margin: 0 auto; }
     .resultados-busqueda { font-size: 13px; color: #888; font-style: italic; margin-bottom: 12px; }
@@ -97,7 +99,7 @@
     .card:hover { transform: translateY(-2px); }
     .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
     .card-nombre { font-size: 17px; font-weight: 600; color: #1a1a2e; }
-    .card-novedad { background: #fb923c; color: #fff; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+    .card-fav { font-size: 16px; }
     .card-categoria { font-size: 13px; color: #2a9d8f; font-weight: 500; margin-bottom: 4px; }
     .card-dir { font-size: 13px; color: #888; }
     .etiquetas-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
@@ -121,6 +123,12 @@
     .modal-links { display: flex; gap: 16px; justify-content: center; margin-top: 8px; margin-bottom: 4px; }
     .modal-links a { font-size: 13px; color: #2a9d8f; text-decoration: none; }
     .modal-links a:hover { text-decoration: underline; }
+
+    @keyframes pulse {
+      0%{transform:scale(1);opacity:0.8}
+      50%{transform:scale(1.5);opacity:0.3}
+      100%{transform:scale(1);opacity:0.8}
+    }
   </style>
 </head>
 <body>
@@ -151,6 +159,7 @@
 <div id="mapa-wrap">
   <div id="mapa"></div>
   <button id="btn-filtro-mapa" onclick="abrirFiltro()">⚙ Filtrar</button>
+  <button id="btn-favoritos-mapa" onclick="toggleSoloFavoritos()">🤍 Favoritos</button>
 </div>
 
 <div id="lista-wrap">
@@ -193,6 +202,21 @@
   let busqueda = '';
   let vista = 'mapa';
   let markers = [];
+  let soloFavoritos = false;
+
+  // localStorage helpers
+  function getVisitados() {
+    try { return new Set(JSON.parse(localStorage.getItem('locales_visitados') || '[]')); } catch { return new Set(); }
+  }
+  function getFavoritos() {
+    try { return new Set(JSON.parse(localStorage.getItem('locales_favoritos') || '[]')); } catch { return new Set(); }
+  }
+  function toggleFavoritoLocal(id) {
+    const favs = getFavoritos();
+    const idStr = String(id);
+    if (favs.has(idStr)) favs.delete(idStr); else favs.add(idStr);
+    localStorage.setItem('locales_favoritos', JSON.stringify([...favs]));
+  }
 
   const mapa = L.map('mapa', { zoomControl: true }).setView([-34.6037, -58.3816], 13);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19, attribution: '' }).addTo(mapa);
@@ -214,7 +238,10 @@
   }
 
   function localesFiltrados() {
+    const visitados = getVisitados();
+    const favoritos = getFavoritos();
     return locales.filter(l => {
+      if (soloFavoritos && !favoritos.has(String(l.id))) return false;
       if (filtro !== 'Todos') {
         const cumple = Array.isArray(l.categoria) ? l.categoria.includes(filtro) : l.categoria === filtro;
         if (!cumple) return false;
@@ -245,22 +272,30 @@
     renderLista(); renderMapa();
   }
 
+  function toggleSoloFavoritos() {
+    soloFavoritos = !soloFavoritos;
+    const btn = document.getElementById('btn-favoritos-mapa');
+    btn.textContent = soloFavoritos ? '❤️ Favoritos' : '🤍 Favoritos';
+    btn.classList.toggle('activo', soloFavoritos);
+    renderMapa(); renderLista();
+  }
+
   function renderMapa() {
     markers.forEach(m => mapa.removeLayer(m));
     markers = [];
+    const visitados = getVisitados();
     localesFiltrados().forEach(l => {
       if (!l.lat || !l.lng) return;
-      const novedad = l.tiene_novedad;
-      const color = novedad ? '#fb923c' : '#2563eb';
-      const html = novedad
-        ? '<div style="position:relative;width:16px;height:16px;"><div style="position:absolute;top:-5px;left:-5px;width:26px;height:26px;border-radius:50%;background:rgba(251,146,60,0.4);animation:pulse 1.4s ease-in-out infinite;"></div><div style="width:16px;height:16px;background:#fb923c;border-radius:50%;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);position:relative;z-index:1;"></div></div>'
-        : '<div style="width:14px;height:14px;background:#2563eb;border-radius:50%;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3);"></div>';
+      const yaVisitado = visitados.has(String(l.id));
+      const color = yaVisitado ? '#2563eb' : '#fb923c';
+      const html = yaVisitado
+        ? '<div style="width:14px;height:14px;background:#2563eb;border-radius:50%;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3);"></div>'
+        : '<div style="position:relative;width:14px;height:14px;"><div style="position:absolute;top:-5px;left:-5px;width:24px;height:24px;border-radius:50%;background:rgba(251,146,60,0.4);animation:pulse 1.4s ease-in-out infinite;"></div><div style="width:14px;height:14px;background:#fb923c;border-radius:50%;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);position:relative;z-index:1;"></div></div>';
       const marker = L.marker([parseFloat(l.lat), parseFloat(l.lng)], {
-        icon: L.divIcon({ html, iconSize: [16,16], iconAnchor: [8,8], className: '' })
+        icon: L.divIcon({ html, iconSize: [14,14], iconAnchor: [7,7], className: '' })
       }).addTo(mapa);
       marker.bindPopup(
         '<div style="text-align:center;padding:8px;min-width:180px;">' +
-        (novedad ? '<div style="background:#fff3e0;color:#c2410c;font-size:11px;font-weight:600;padding:3px 8px;border-radius:10px;display:inline-block;margin-bottom:6px;">🔔 ¡Novedad!</div><br>' : '') +
         '<strong style="font-size:14px;">' + l.nombre + '</strong><br>' +
         '<small style="color:#888;">' + (Array.isArray(l.categoria) ? l.categoria[0] : l.categoria) + '</small><br><br>' +
         '<a href="local.html?id=' + l.id + '" style="background:' + color + ';color:white;text-decoration:none;padding:8px 0;border-radius:8px;display:block;font-weight:600;font-size:13px;">Ver local</a>' +
@@ -273,6 +308,7 @@
   function renderLista() {
     const wrap = document.getElementById('lista-contenido');
     const items = localesFiltrados();
+    const favoritos = getFavoritos();
 
     const resTexto = document.getElementById('resultados-texto');
     if (busqueda.trim().length > 0) {
@@ -285,17 +321,18 @@
     }
 
     if (items.length === 0) {
-      wrap.innerHTML = '<div class="sin-locales">No hay locales en esta categoría.</div>';
+      wrap.innerHTML = '<div class="sin-locales">' + (soloFavoritos ? 'No tenés favoritos todavía.' : 'No hay locales en esta categoría.') + '</div>';
       return;
     }
 
     wrap.innerHTML = items.map(l => {
+      const esFav = favoritos.has(String(l.id));
       const etiquetasHtml = Array.isArray(l.etiquetas) && l.etiquetas.length > 0
         ? '<div class="etiquetas-row">' + l.etiquetas.slice(0, 4).map(e => '<span class="etiqueta-chip">' + e + '</span>').join('') + '</div>'
         : '';
       return '<a class="card" href="local.html?id=' + l.id + '">' +
         '<div class="card-header"><span class="card-nombre">' + l.nombre + '</span>' +
-        (l.tiene_novedad ? '<span class="card-novedad">🔔 Novedad</span>' : '') + '</div>' +
+        '<span class="card-fav">' + (esFav ? '❤️' : '🤍') + '</span></div>' +
         '<div class="card-categoria">' + (Array.isArray(l.categoria) ? l.categoria.join(' · ') : l.categoria) + '</div>' +
         '<div class="card-dir">📍 ' + (l.direccion || '') + '</div>' +
         etiquetasHtml +
@@ -337,10 +374,6 @@
   function cerrarFiltro() { document.getElementById('overlay-filtro').classList.remove('visible'); }
   function abrirContacto() { document.getElementById('overlay-contacto').classList.add('visible'); }
   function cerrarContacto() { document.getElementById('overlay-contacto').classList.remove('visible'); }
-
-  const style = document.createElement('style');
-  style.textContent = '@keyframes pulse { 0%{transform:scale(1);opacity:0.8} 50%{transform:scale(1.5);opacity:0.3} 100%{transform:scale(1);opacity:0.8} }';
-  document.head.appendChild(style);
 
   cargar();
 </script>
