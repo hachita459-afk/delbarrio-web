@@ -12,12 +12,8 @@
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f8f8; }
 
     header {
-      background: #2a9d8f;
-      padding: 0 24px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      background: #2a9d8f; padding: 0 16px; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; z-index: 100;
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
@@ -26,44 +22,64 @@
     .logo-circle { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid #fff; display: flex; align-items: center; justify-content: center; }
     .logo-pin { width: 6px; height: 6px; border-radius: 50%; background: #fff; }
     .logo-text { font-size: 20px; font-weight: 700; color: #fff; }
-    .btn-salir { background: rgba(255,255,255,0.2); color: #fff; border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .btn-salir {
+      background: rgba(255,255,255,0.2); color: #fff; border: none;
+      padding: 8px 16px; border-radius: 20px; font-size: 14px;
+      font-weight: 600; cursor: pointer;
+    }
 
-    .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 60px; }
+    .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 80px; }
 
     /* ID BANNER */
     .id-banner {
-      background: #f0f4ff;
-      border: 1px solid #dde3f8;
-      border-radius: 14px;
-      padding: 16px;
-      text-align: center;
-      margin-bottom: 16px;
+      background: #f0f4ff; border: 1px solid #dde3f8;
+      border-radius: 14px; padding: 16px; text-align: center; margin-bottom: 16px;
     }
     .id-label { font-size: 11px; color: #888; font-weight: 500; margin-bottom: 4px; }
     .id-numero { font-size: 32px; font-weight: 800; color: #1a1a2e; letter-spacing: 1px; }
     .id-hint { font-size: 11px; color: #aaa; margin-top: 4px; }
 
-    /* BANNER */
-    .banner { padding: 12px 16px; border-radius: 12px; margin-bottom: 20px; font-size: 13px; font-weight: 500; }
+    /* BANNERS */
+    .banner { padding: 12px 16px; border-radius: 12px; margin-bottom: 16px; font-size: 13px; font-weight: 500; }
     .banner-ok { background: #d0f0ec; color: #2a9d8f; }
     .banner-warn { background: #fff3cd; color: #856404; }
     .banner-error { background: #ffe0e0; color: #e63939; }
-    .banner-btn { display: inline-block; margin-top: 8px; background: #1a1a2e; color: #fff; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; }
+    .banner-btn {
+      display: inline-block; margin-top: 8px; background: #1a1a2e;
+      color: #fff; padding: 8px 16px; border-radius: 8px;
+      font-size: 13px; font-weight: 600; text-decoration: none;
+    }
+
+    /* MSG */
+    .msg { padding: 12px 16px; border-radius: 10px; font-size: 14px; margin-bottom: 16px; display: none; }
+    .msg.ok { background: #d0f0ec; color: #2a9d8f; display: block; }
+    .msg.error { background: #ffe0e0; color: #e63939; display: block; }
 
     /* SECCIONES */
     .seccion { background: #fff; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
     .seccion-titulo { font-size: 15px; font-weight: 700; color: #1a1a2e; margin-bottom: 16px; }
 
     /* FOTOS */
-    .fotos-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+    .fotos-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
     .foto-wrap { position: relative; }
     .foto-thumb { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; display: block; }
     .foto-nueva { border: 2px solid #22c55e; }
-    .foto-borrar { position: absolute; top: -6px; right: -6px; background: #e63939; border: none; border-radius: 50%; width: 20px; height: 20px; color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .btn-agregar-foto { width: 80px; height: 80px; border-radius: 10px; border: 2px dashed #ddd; background: none; cursor: pointer; font-size: 13px; color: #888; display: flex; align-items: center; justify-content: center; }
+    .foto-borrar {
+      position: absolute; top: -6px; right: -6px;
+      background: #e63939; border: none; border-radius: 50%;
+      width: 20px; height: 20px; color: #fff; font-size: 11px;
+      font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-agregar-foto {
+      width: 80px; height: 80px; border-radius: 10px;
+      border: 2px dashed #ddd; background: none; cursor: pointer;
+      font-size: 13px; color: #888;
+      display: flex; align-items: center; justify-content: center;
+    }
 
     /* MAPA */
-    #mapa-picker { height: 260px; border-radius: 12px; overflow: hidden; margin-bottom: 12px; }
+    #mapa-picker { height: 260px; border-radius: 12px; overflow: hidden; margin-bottom: 8px; }
 
     /* CAMPOS */
     .field { margin-bottom: 16px; }
@@ -71,11 +87,12 @@
     .label-hint { font-size: 11px; color: #aaa; margin-top: 4px; }
     .input {
       width: 100%; border: 1.5px solid #ddd; border-radius: 10px;
-      padding: 12px 14px; font-size: 15px; background: #fafafa; outline: none;
-      transition: border-color 0.15s; font-family: inherit;
+      padding: 12px 14px; font-size: 15px; background: #fafafa;
+      outline: none; transition: border-color 0.15s; font-family: inherit;
     }
     .input:focus { border-color: #2a9d8f; background: #fff; }
-    textarea.input { min-height: 120px; resize: vertical; }
+    textarea.input { min-height: 70px; resize: vertical; }
+    textarea.input.grande { min-height: 120px; }
 
     /* CATEGORÍAS */
     .cats-grid { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -86,26 +103,15 @@
     }
     .cat-pill.activo { background: #1a1a2e; color: #fff; }
 
-    /* TYC CHECKBOX */
-    .tyc-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
-      margin-top: 8px;
-    }
+    /* TYC */
+    .tyc-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; margin-top: 8px; cursor: pointer; }
     .checkbox-custom {
-      width: 24px; height: 24px;
-      border-radius: 6px;
-      border: 2px solid #ddd;
-      background: #fafafa;
+      width: 24px; height: 24px; border-radius: 6px;
+      border: 2px solid #ddd; background: #fafafa;
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: all 0.15s;
+      flex-shrink: 0; transition: all 0.15s;
     }
-    .checkbox-custom.activo { border-color: #2a9d8f; background: #2a9d8f; }
-    .checkbox-custom.activo::after { content: '✓'; color: #fff; font-size: 14px; font-weight: 700; }
+    .checkbox-custom.activo { border-color: #2a9d8f; background: #2a9d8f; color: #fff; font-size: 14px; font-weight: 700; }
     .tyc-texto { font-size: 13px; color: #555; line-height: 1.5; }
     .tyc-link { color: #2a9d8f; font-weight: 600; }
 
@@ -117,11 +123,6 @@
     }
     .btn-guardar:hover { opacity: 0.9; }
     .btn-guardar:disabled { background: #aaa; cursor: not-allowed; }
-
-    /* MSG */
-    .msg { padding: 12px 16px; border-radius: 10px; font-size: 14px; margin-bottom: 16px; display: none; }
-    .msg.ok { background: #d0f0ec; color: #2a9d8f; display: block; }
-    .msg.error { background: #ffe0e0; color: #e63939; display: block; }
 
     .loading { text-align: center; padding: 60px; color: #888; }
 
@@ -157,7 +158,6 @@
 
   let CATEGORIAS = [];
   const MAX_FOTOS = 5;
-
   let session = null;
   let local = null;
   let coords = null;
@@ -232,7 +232,7 @@
     } else if (local && porVencer) {
       bannerHtml = `<div class="banner banner-warn">⚠️ Tu período gratis vence en ${dias} día${dias === 1 ? '' : 's'}</div>`;
     } else if (vencido) {
-      bannerHtml = `<div class="banner banner-error">❌ Tu período gratis venció. Activá un plan para seguir visible.</div>`;
+      bannerHtml = `<div class="banner banner-error">❌ Tu período gratis venció. Contactanos para activar un plan.</div>`;
     }
 
     const nombre = local?.nombre || '';
@@ -248,22 +248,19 @@
       ${bannerHtml}
       <div class="msg" id="msg"></div>
 
-      <!-- FOTOS -->
       <div class="seccion">
         <div class="seccion-titulo" id="fotos-titulo">Fotos (${totalFotos}/${MAX_FOTOS})</div>
         <div class="fotos-row" id="fotos-row"></div>
       </div>
 
-      <!-- UBICACIÓN -->
       <div class="seccion">
         <div class="seccion-titulo">Ubicación</div>
         <div id="mapa-picker"></div>
-        <div id="coords-texto" style="font-size:13px;color:#888;margin-bottom:8px;">
+        <div id="coords-texto" style="font-size:13px;color:#888;margin-top:8px;">
           ${coords ? '📍 Ubicación guardada. Hacé click en el mapa para cambiarla.' : 'Hacé click en el mapa para fijar tu ubicación.'}
         </div>
       </div>
 
-      <!-- DATOS -->
       <div class="seccion">
         <div class="seccion-titulo">Información del local</div>
 
@@ -273,7 +270,7 @@
         </div>
 
         <div class="field">
-          <label class="label">Categorías * <span id="cats-count" style="color:#1a1a2e;font-weight:600;">${categorias.length > 0 ? '(' + categorias.length + ' seleccionadas)' : ''}</span></label>
+          <label class="label">Categoría * <span id="cats-count" style="color:#1a1a2e;font-weight:600;">${categorias.length > 0 ? '(' + categorias.length + ' seleccionadas)' : ''}</span></label>
           <div class="cats-grid" id="cats-grid"></div>
         </div>
 
@@ -294,20 +291,19 @@
 
         <div class="field">
           <label class="label">Etiquetas</label>
-          <input class="input" id="etiquetas" value="${etiquetas}" placeholder="Ej: delivery, sin tacc, estacionamiento" autocapitalize="none">
+          <textarea class="input" id="etiquetas" placeholder="Ej: delivery, sin tacc, estacionamiento" autocapitalize="none">${etiquetas}</textarea>
           <div class="label-hint">Separadas por coma. Los usuarios van a poder buscar por estas palabras.</div>
         </div>
 
         <div class="field">
           <label class="label">Descripción *</label>
-          <textarea class="input" id="descripcion" placeholder="Contá sobre tu local...">${descripcion}</textarea>
+          <textarea class="input grande" id="descripcion" placeholder="Contá sobre tu local...">${descripcion}</textarea>
         </div>
 
-        <!-- TYC -->
-        <div class="tyc-row">
-          <div class="checkbox-custom" id="checkbox-tyc" onclick="toggleTyC()"></div>
+        <div class="tyc-row" onclick="toggleTyC()">
+          <div class="checkbox-custom" id="checkbox-tyc"></div>
           <div class="tyc-texto">
-            Acepto los <a class="tyc-link" href="${TYC_URL}" target="_blank">Términos y Condiciones</a> de Del Barrio
+            Acepto los <a class="tyc-link" href="${TYC_URL}" target="_blank" onclick="event.stopPropagation()">Términos y Condiciones</a> de Del Barrio
           </div>
         </div>
 
@@ -324,39 +320,33 @@
 
   function toggleTyC() {
     aceptaTyC = !aceptaTyC;
-    const checkbox = document.getElementById('checkbox-tyc');
-    const btn = document.getElementById('btn-guardar');
-    checkbox.classList.toggle('activo', aceptaTyC);
-    btn.disabled = !aceptaTyC;
+    const cb = document.getElementById('checkbox-tyc');
+    cb.classList.toggle('activo', aceptaTyC);
+    cb.textContent = aceptaTyC ? '✓' : '';
+    document.getElementById('btn-guardar').disabled = !aceptaTyC;
   }
 
   function renderFotos() {
     const row = document.getElementById('fotos-row');
     if (!row) return;
-    const totalFotos = fotosGuardadas.length + fotosNuevas.length;
-
+    const total = fotosGuardadas.length + fotosNuevas.length;
     let html = fotosGuardadas.map((url, i) => `
       <div class="foto-wrap">
         <img class="foto-thumb" src="${url}">
         <button class="foto-borrar" onclick="borrarFotoGuardada(${i})">✕</button>
-      </div>
-    `).join('');
-
+      </div>`).join('');
     html += fotosNuevas.map((f, i) => `
       <div class="foto-wrap">
         <img class="foto-thumb foto-nueva" src="${f.url}">
         <button class="foto-borrar" onclick="borrarFotoNueva(${i})">✕</button>
-      </div>
-    `).join('');
-
-    if (totalFotos < MAX_FOTOS) {
+      </div>`).join('');
+    if (total < MAX_FOTOS) {
       html += `<button class="btn-agregar-foto" onclick="document.getElementById('input-foto').click()">+ Foto</button>
                <input type="file" id="input-foto" accept="image/*" multiple style="display:none" onchange="agregarFotos(this)">`;
     }
-
     row.innerHTML = html;
     const titulo = document.getElementById('fotos-titulo');
-    if (titulo) titulo.textContent = `Fotos (${totalFotos}/${MAX_FOTOS})`;
+    if (titulo) titulo.textContent = `Fotos (${total}/${MAX_FOTOS})`;
   }
 
   function renderCategorias() {
@@ -368,11 +358,7 @@
   }
 
   function toggleCat(cat) {
-    if (categorias.includes(cat)) {
-      categorias = categorias.filter(c => c !== cat);
-    } else {
-      categorias = [...categorias, cat];
-    }
+    categorias = categorias.includes(cat) ? categorias.filter(c => c !== cat) : [...categorias, cat];
     renderCategorias();
     const count = document.getElementById('cats-count');
     if (count) count.textContent = categorias.length > 0 ? `(${categorias.length} seleccionadas)` : '';
@@ -380,13 +366,9 @@
 
   function initMapa() {
     const center = coords ? [coords.lat, coords.lng] : [-34.6037, -58.3816];
-    mapa = L.map('mapa-picker', { zoomControl: true }).setView(center, 15);
+    mapa = L.map('mapa-picker').setView(center, 15);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19, attribution: '' }).addTo(mapa);
-
-    if (coords) {
-      mapaMarker = L.marker([coords.lat, coords.lng]).addTo(mapa);
-    }
-
+    if (coords) mapaMarker = L.marker([coords.lat, coords.lng]).addTo(mapa);
     mapa.on('click', function(e) {
       coords = { lat: e.latlng.lat, lng: e.latlng.lng };
       if (mapaMarker) mapa.removeLayer(mapaMarker);
@@ -399,23 +381,13 @@
   function agregarFotos(input) {
     const disponibles = MAX_FOTOS - fotosGuardadas.length - fotosNuevas.length;
     const files = Array.from(input.files).slice(0, disponibles);
-    files.forEach(file => {
-      const url = URL.createObjectURL(file);
-      fotosNuevas.push({ file, url });
-    });
+    files.forEach(file => fotosNuevas.push({ file, url: URL.createObjectURL(file) }));
     input.value = '';
     renderFotos();
   }
 
-  function borrarFotoGuardada(i) {
-    fotosGuardadas.splice(i, 1);
-    renderFotos();
-  }
-
-  function borrarFotoNueva(i) {
-    fotosNuevas.splice(i, 1);
-    renderFotos();
-  }
+  function borrarFotoGuardada(i) { fotosGuardadas.splice(i, 1); renderFotos(); }
+  function borrarFotoNueva(i) { fotosNuevas.splice(i, 1); renderFotos(); }
 
   async function subirFotos(localId) {
     const urls = [];
@@ -427,9 +399,7 @@
         if (error) throw error;
         const { data } = db.storage.from('fotos-locales').getPublicUrl(fileName);
         urls.push(data.publicUrl);
-      } catch (e) {
-        console.error('Error subiendo foto:', e);
-      }
+      } catch(e) { console.error('Error subiendo foto:', e); }
     }
     return urls;
   }
@@ -443,18 +413,13 @@
   }
 
   async function guardar() {
-    if (!aceptaTyC) {
-      mostrarMsg('Debés aceptar los Términos y Condiciones para guardar.', 'error');
-      return;
-    }
-
     const nombre = document.getElementById('nombre').value.trim();
     const descripcion = document.getElementById('descripcion').value.trim();
     const direccion = document.getElementById('direccion').value.trim();
     const telefono = document.getElementById('telefono').value.trim();
     const horario = document.getElementById('horario').value.trim();
-    const etiquetasRaw = document.getElementById('etiquetas').value;
-    const etiquetas = etiquetasRaw.split(',').map(e => e.trim().toLowerCase()).filter(e => e.length > 0);
+    const etiquetas = document.getElementById('etiquetas').value
+      .split(',').map(e => e.trim().toLowerCase()).filter(e => e.length > 0);
     const btn = document.getElementById('btn-guardar');
 
     if (!nombre || categorias.length === 0 || !descripcion || !direccion) {
@@ -470,6 +435,18 @@
     btn.textContent = 'Guardando...';
 
     try {
+      // Chequear dirección bloqueada (solo si es local nuevo)
+      if (!local) {
+        const { data: bloqueada } = await db.from('direcciones_bloqueadas')
+          .select('id').ilike('direccion', direccion).maybeSingle();
+        if (bloqueada) {
+          mostrarMsg('Esta dirección ya cumplió el período de prueba. Para continuar deberás abonar un plan. Contactanos a dbshops2026@gmail.com.', 'error');
+          btn.disabled = false;
+          btn.textContent = 'Publicar local';
+          return;
+        }
+      }
+
       const idParaSubir = local?.id || session.user.id;
       const urlsNuevas = fotosNuevas.length > 0 ? await subirFotos(idParaSubir) : [];
       const todasLasFotos = [...fotosGuardadas, ...urlsNuevas];
@@ -477,8 +454,7 @@
       if (local) {
         const { error } = await db.from('locales').update({
           nombre, categoria: categorias, descripcion, direccion, telefono, horario,
-          etiquetas,
-          fotos: todasLasFotos, lat: coords.lat, lng: coords.lng,
+          etiquetas, fotos: todasLasFotos, lat: coords.lat, lng: coords.lng,
           updated_at: new Date().toISOString(), tiene_novedad: true,
         }).eq('id', local.id);
         if (error) throw error;
@@ -486,8 +462,7 @@
         const { data: nuevoLocal, error } = await db.from('locales').insert({
           owner_id: session.user.id,
           nombre, categoria: categorias, descripcion, direccion, telefono, horario,
-          etiquetas,
-          fotos: todasLasFotos, lat: coords.lat, lng: coords.lng,
+          etiquetas, fotos: todasLasFotos, lat: coords.lat, lng: coords.lng,
           activo: true,
           free_until: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
         }).select().single();
@@ -499,7 +474,7 @@
       aceptaTyC = false;
       await cargarLocal();
       mostrarMsg('✅ ¡Guardado correctamente!', 'ok');
-    } catch (err) {
+    } catch(err) {
       mostrarMsg('Error: ' + (err.message || 'No se pudo guardar'), 'error');
       btn.disabled = false;
       btn.textContent = local ? 'Guardar cambios' : 'Publicar local';
