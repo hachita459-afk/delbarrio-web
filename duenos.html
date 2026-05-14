@@ -7,15 +7,11 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f8f8; min-height: 100vh; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fff; min-height: 100vh; }
 
     header {
-      background: #2a9d8f;
-      padding: 0 24px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      background: #2a9d8f; padding: 0 16px; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
     .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
@@ -23,120 +19,101 @@
     .logo-circle { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid #fff; display: flex; align-items: center; justify-content: center; }
     .logo-pin { width: 6px; height: 6px; border-radius: 50%; background: #fff; }
     .logo-text { font-size: 20px; font-weight: 700; color: #fff; }
-    .btn-volver { background: rgba(255,255,255,0.2); color: #fff; border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; }
+    .btn-volver {
+      background: rgba(255,255,255,0.2); color: #fff; border: none;
+      padding: 8px 16px; border-radius: 20px; font-size: 14px;
+      font-weight: 600; cursor: pointer; text-decoration: none;
+    }
 
     .wrap {
       max-width: 440px;
       margin: 40px auto;
-      padding: 0 20px;
+      padding: 0 24px 60px;
     }
 
-    .card {
-      background: #fff;
-      border-radius: 20px;
-      padding: 32px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    }
-
+    /* LOGO GRANDE */
     .logo-grande {
-      width: 64px; height: 64px;
-      background: #2a9d8f;
-      border-radius: 20px;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 16px;
+      width: 64px; height: 64px; background: #2a9d8f;
+      border-radius: 20px; display: flex; align-items: center;
+      justify-content: center; margin: 0 auto 16px;
     }
     .logo-grande-circle { width: 26px; height: 26px; border-radius: 50%; border: 3px solid #fff; display: flex; align-items: center; justify-content: center; }
     .logo-grande-pin { width: 10px; height: 10px; border-radius: 50%; background: #fff; }
 
-    .titulo { font-size: 24px; font-weight: 700; color: #2a9d8f; text-align: center; margin-bottom: 6px; }
-    .subtitulo { font-size: 14px; color: #888; text-align: center; margin-bottom: 28px; }
+    .app-name { font-size: 28px; font-weight: 700; color: #2a9d8f; text-align: center; margin-bottom: 6px; }
+    .tagline { font-size: 15px; color: #666; text-align: center; margin-bottom: 40px; }
 
+    /* TOGGLE */
     .toggle {
-      display: flex;
-      background: #f0f0f0;
-      border-radius: 12px;
-      padding: 4px;
-      margin-bottom: 28px;
+      display: flex; background: #f0f0f0; border-radius: 14px;
+      padding: 4px; margin-bottom: 32px;
     }
     .toggle-btn {
-      flex: 1;
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      background: transparent;
-      color: #888;
-      transition: all 0.15s;
+      flex: 1; padding: 12px; border-radius: 10px; border: none;
+      font-size: 15px; font-weight: 500; cursor: pointer;
+      background: transparent; color: #777; transition: all 0.15s;
     }
     .toggle-btn.activo {
-      background: #fff;
-      color: #2a9d8f;
-      font-weight: 600;
+      background: #fff; color: #2a9d8f; font-weight: 600;
       box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
 
-    .field { margin-bottom: 18px; }
-    .label { font-size: 13px; color: #666; font-weight: 500; margin-bottom: 6px; display: block; }
+    /* CAMPOS */
+    .field { margin-bottom: 20px; }
+    .label { font-size: 13px; color: #666; font-weight: 500; margin-bottom: 8px; display: block; }
+
+    .input-wrap { position: relative; }
     .input {
-      width: 100%;
-      border: 1.5px solid #ddd;
-      border-radius: 12px;
-      padding: 13px 16px;
-      font-size: 15px;
-      background: #fafafa;
-      outline: none;
-      transition: border-color 0.15s;
+      width: 100%; border: 1px solid #ddd; border-radius: 12px;
+      padding: 15px; font-size: 16px; background: #fafafa;
+      outline: none; transition: border-color 0.15s; font-family: inherit;
     }
     .input:focus { border-color: #2a9d8f; background: #fff; }
+    .btn-ojito {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; font-size: 18px; cursor: pointer; padding: 4px;
+    }
 
+    /* MSG */
+    .msg { padding: 12px 16px; border-radius: 10px; font-size: 14px; margin-bottom: 16px; display: none; }
+    .msg.ok { background: #d0f0ec; color: #2a9d8f; display: block; }
+    .msg.error { background: #ffe0e0; color: #e63939; display: block; }
+
+    /* AVISO INTENTOS */
+    .aviso-intentos {
+      text-align: center; font-size: 13px; color: #e63939;
+      font-weight: 500; margin-bottom: 8px; display: none;
+    }
+
+    /* BOTONES */
     .btn-primary {
-      width: 100%;
-      background: #2a9d8f;
-      color: #fff;
-      border: none;
-      padding: 14px;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 8px;
-      transition: opacity 0.15s;
+      width: 100%; background: #2a9d8f; color: #fff; border: none;
+      padding: 16px; border-radius: 14px; font-size: 16px; font-weight: 600;
+      cursor: pointer; margin-top: 12px; transition: opacity 0.15s;
     }
     .btn-primary:hover { opacity: 0.9; }
     .btn-primary:disabled { background: #aaa; cursor: not-allowed; }
 
-    .btn-secondary {
-      width: 100%;
-      background: transparent;
-      color: #e63939;
-      border: none;
-      padding: 12px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 8px;
+    .btn-olvide {
+      width: 100%; background: none; border: none; color: #2a9d8f;
+      font-size: 14px; font-weight: 500; cursor: pointer; padding: 12px;
+      text-decoration: underline; margin-top: 8px;
     }
 
-    .msg {
-      padding: 12px 16px;
-      border-radius: 10px;
-      font-size: 14px;
-      margin-bottom: 16px;
-      display: none;
+    .info-text { font-size: 13px; color: #777; text-align: center; margin-top: 24px; line-height: 1.6; }
+
+    /* BLOQUEADO */
+    .bloqueado-wrap {
+      text-align: center; padding: 40px 0;
     }
-    .msg.ok { background: #d0f0ec; color: #2a9d8f; display: block; }
-    .msg.error { background: #ffe0e0; color: #e63939; display: block; }
-
-    .info-text { font-size: 13px; color: #aaa; text-align: center; margin-top: 20px; line-height: 1.5; }
-
-    /* PANEL DUEÑO */
-    #panel { display: none; }
-    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-    .panel-titulo { font-size: 20px; font-weight: 700; color: #1a1a2e; }
-    .bienvenido { font-size: 14px; color: #888; margin-bottom: 20px; }
+    .bloqueado-emoji { font-size: 48px; margin-bottom: 20px; }
+    .bloqueado-titulo { font-size: 20px; font-weight: 700; color: #1a1a2e; margin-bottom: 12px; }
+    .bloqueado-texto { font-size: 15px; color: #666; line-height: 1.6; margin-bottom: 32px; }
+    .btn-soporte {
+      display: inline-block; background: #2a9d8f; color: #fff;
+      padding: 14px 28px; border-radius: 14px; text-decoration: none;
+      font-size: 15px; font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -150,18 +127,31 @@
 </header>
 
 <div class="wrap">
-  <!-- FORMULARIO LOGIN/REGISTRO -->
-  <div class="card" id="form-card">
+  <div style="text-align:center;margin-bottom:8px;">
     <div class="logo-grande"><div class="logo-grande-circle"><div class="logo-grande-pin"></div></div></div>
-    <div class="titulo">Del Barrio</div>
-    <div class="subtitulo">Acceso exclusivo para dueños de locales</div>
+  </div>
+  <div class="app-name">Del Barrio</div>
+  <div class="tagline">Acceso exclusivo para dueños de locales</div>
 
+  <!-- BLOQUEADO -->
+  <div id="bloqueado-wrap" style="display:none">
+    <div class="bloqueado-wrap">
+      <div class="bloqueado-emoji">🔒</div>
+      <div class="bloqueado-titulo">Cuenta bloqueada</div>
+      <div class="bloqueado-texto">Superaste el máximo de intentos permitidos. Contactá a Del Barrio para recuperar el acceso.</div>
+      <a class="btn-soporte" href="mailto:dbshops2026@gmail.com?subject=Cuenta bloqueada - Del Barrio">✉️ Contactar soporte</a>
+    </div>
+  </div>
+
+  <!-- FORMULARIO -->
+  <div id="form-wrap">
     <div class="toggle">
       <button class="toggle-btn activo" id="btn-login" onclick="setModo('login')">Ingresar</button>
       <button class="toggle-btn" id="btn-registro" onclick="setModo('registro')">Registrarse</button>
     </div>
 
     <div class="msg" id="msg"></div>
+    <div class="aviso-intentos" id="aviso-intentos"></div>
 
     <div class="field" id="field-nombre" style="display:none">
       <label class="label">Nombre completo</label>
@@ -175,46 +165,62 @@
 
     <div class="field">
       <label class="label">Contraseña</label>
-      <input class="input" id="password" type="password" placeholder="Mínimo 6 caracteres" autocomplete="current-password">
+      <div class="input-wrap">
+        <input class="input" id="password" type="password" placeholder="Mínimo 6 caracteres" autocomplete="current-password" style="padding-right:48px">
+        <button class="btn-ojito" onclick="togglePassword()" id="btn-ojito">👁</button>
+      </div>
     </div>
 
     <button class="btn-primary" id="btn-submit" onclick="handleSubmit()">Ingresar</button>
 
-    <p class="info-text" id="info-registro" style="display:none">
-      Una vez creada la cuenta podrás gestionar tu local desde la app Del Barrio.
-    </p>
-  </div>
+    <button class="btn-olvide" id="btn-olvide" onclick="handleReset()" style="display:none">
+      ¿Olvidaste tu contraseña?
+    </button>
 
-  <!-- PANEL DUEÑO (logueado) -->
-  <div class="card" id="panel">
-    <div class="panel-header">
-      <div class="panel-titulo">Mi cuenta</div>
-      <button class="btn-secondary" style="width:auto;margin:0" onclick="cerrarSesion()">Cerrar sesión</button>
-    </div>
-    <div class="bienvenido" id="bienvenido-texto"></div>
-    <p style="font-size:15px;color:#555;line-height:1.6;margin-bottom:20px;">
-      Para gestionar tu local, agregar fotos, editar información y ver tus novedades, usá la app <strong>Del Barrio</strong> desde tu celular.
+    <p class="info-text" id="info-registro" style="display:none">
+      Una vez creada la cuenta podrás gestionar tu local desde esta página o desde la app Del Barrio.
     </p>
-    <a href="index.html" class="btn-primary" style="display:block;text-align:center;text-decoration:none;">
-      Ver el mapa
-    </a>
   </div>
 </div>
 
 <script>
   const SUPABASE_URL = 'https://dlvtgrjmeyuxgojryafr.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_R2C9F9NOjCNx765jp90DbA_hr70zqPT';
+  const CONTACTO_EMAIL = 'dbshops2026@gmail.com';
+  const MAX_INTENTOS = 5;
+  const KEY_INTENTOS = 'login_intentos_fallidos';
+  const KEY_BLOQUEADO = 'login_bloqueado';
   const { createClient } = supabase;
   const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
   let modo = 'login';
+  let verPassword = false;
 
+  // ── Chequear bloqueo al cargar ──────────────────────────────────────────
+  function chequearBloqueo() {
+    if (localStorage.getItem(KEY_BLOQUEADO) === 'true') {
+      document.getElementById('form-wrap').style.display = 'none';
+      document.getElementById('bloqueado-wrap').style.display = 'block';
+      return true;
+    }
+    const intentos = parseInt(localStorage.getItem(KEY_INTENTOS) || '0');
+    const restantes = MAX_INTENTOS - intentos;
+    if (intentos > 0 && restantes > 0) {
+      const aviso = document.getElementById('aviso-intentos');
+      aviso.style.display = 'block';
+      aviso.textContent = `⚠️ ${restantes} intento${restantes === 1 ? '' : 's'} restante${restantes === 1 ? '' : 's'} antes del bloqueo`;
+    }
+    return false;
+  }
+
+  // ── Modo login/registro ─────────────────────────────────────────────────
   function setModo(m) {
     modo = m;
     document.getElementById('btn-login').classList.toggle('activo', m === 'login');
     document.getElementById('btn-registro').classList.toggle('activo', m === 'registro');
     document.getElementById('field-nombre').style.display = m === 'registro' ? 'block' : 'none';
     document.getElementById('info-registro').style.display = m === 'registro' ? 'block' : 'none';
+    document.getElementById('btn-olvide').style.display = m === 'login' ? 'block' : 'none';
     document.getElementById('btn-submit').textContent = m === 'login' ? 'Ingresar' : 'Crear cuenta como dueño';
     ocultarMsg();
   }
@@ -224,15 +230,24 @@
     el.textContent = texto;
     el.className = `msg ${tipo}`;
   }
+  function ocultarMsg() { document.getElementById('msg').className = 'msg'; }
 
-  function ocultarMsg() {
-    document.getElementById('msg').className = 'msg';
+  // ── Ojito ───────────────────────────────────────────────────────────────
+  function togglePassword() {
+    verPassword = !verPassword;
+    const input = document.getElementById('password');
+    const btn = document.getElementById('btn-ojito');
+    input.type = verPassword ? 'text' : 'password';
+    btn.textContent = verPassword ? '🙈' : '👁';
   }
 
+  // ── Submit ──────────────────────────────────────────────────────────────
   async function handleSubmit() {
+    if (localStorage.getItem(KEY_BLOQUEADO) === 'true') return;
+
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value.trim();
-    const nombre = document.getElementById('nombre').value.trim();
+    const nombre = document.getElementById('nombre')?.value.trim();
     const btn = document.getElementById('btn-submit');
 
     if (!email || !password) { mostrarMsg('Completá email y contraseña.', 'error'); return; }
@@ -245,8 +260,26 @@
     if (modo === 'login') {
       const { error } = await db.auth.signInWithPassword({ email, password });
       if (error) {
-        mostrarMsg('Email o contraseña incorrectos.', 'error');
+        // Contar intento fallido
+        const intentosActuales = parseInt(localStorage.getItem(KEY_INTENTOS) || '0');
+        const nuevosIntentos = intentosActuales + 1;
+        localStorage.setItem(KEY_INTENTOS, String(nuevosIntentos));
+
+        if (nuevosIntentos >= MAX_INTENTOS) {
+          localStorage.setItem(KEY_BLOQUEADO, 'true');
+          document.getElementById('form-wrap').style.display = 'none';
+          document.getElementById('bloqueado-wrap').style.display = 'block';
+        } else {
+          const restantes = MAX_INTENTOS - nuevosIntentos;
+          const aviso = document.getElementById('aviso-intentos');
+          aviso.style.display = 'block';
+          aviso.textContent = `⚠️ ${restantes} intento${restantes === 1 ? '' : 's'} restante${restantes === 1 ? '' : 's'} antes del bloqueo`;
+          mostrarMsg('Email o contraseña incorrectos.', 'error');
+        }
       } else {
+        // Login exitoso — limpiar intentos
+        localStorage.removeItem(KEY_INTENTOS);
+        localStorage.removeItem(KEY_BLOQUEADO);
         window.location.href = 'panel.html';
       }
     } else {
@@ -256,6 +289,7 @@
       } else if (data.user) {
         await db.from('profiles').insert({ id: data.user.id, full_name: nombre, role: 'dueno' });
         mostrarMsg('¡Cuenta creada! Revisá tu email para confirmar tu cuenta.', 'ok');
+        setModo('login');
       }
     }
 
@@ -263,27 +297,42 @@
     btn.textContent = modo === 'login' ? 'Ingresar' : 'Crear cuenta como dueño';
   }
 
-  async function mostrarPanel() {
-    const { data: { user } } = await db.auth.getUser();
-    if (!user) return;
-    const { data: profile } = await db.from('profiles').select('full_name').eq('id', user.id).single();
-    const nombre = profile?.full_name || user.email;
-    document.getElementById('bienvenido-texto').textContent = `Bienvenido, ${nombre}`;
-    document.getElementById('form-card').style.display = 'none';
-    document.getElementById('panel').style.display = 'block';
+  // ── Reset contraseña ────────────────────────────────────────────────────
+  async function handleReset() {
+    const email = document.getElementById('email').value.trim();
+    if (!email) {
+      mostrarMsg('Escribí tu email arriba y luego tocá "¿Olvidaste tu contraseña?"', 'error');
+      return;
+    }
+    const btn = document.getElementById('btn-submit');
+    btn.disabled = true;
+    ocultarMsg();
+    try {
+      const { error } = await db.auth.resetPasswordForEmail(email);
+      if (error) throw error;
+      // Reset exitoso — limpiar bloqueo
+      localStorage.removeItem(KEY_INTENTOS);
+      localStorage.removeItem(KEY_BLOQUEADO);
+      mostrarMsg(`📧 Email enviado a ${email}. Revisá tu casilla y seguí las instrucciones.`, 'ok');
+      document.getElementById('aviso-intentos').style.display = 'none';
+      document.getElementById('bloqueado-wrap').style.display = 'none';
+      document.getElementById('form-wrap').style.display = 'block';
+    } catch(err) {
+      mostrarMsg(`No se pudo enviar el email. Escribinos a ${CONTACTO_EMAIL}`, 'error');
+    } finally {
+      btn.disabled = false;
+    }
   }
 
-  async function cerrarSesion() {
-    await db.auth.signOut();
-    document.getElementById('form-card').style.display = 'block';
-    document.getElementById('panel').style.display = 'none';
-    setModo('login');
+  // ── Init ────────────────────────────────────────────────────────────────
+  if (!chequearBloqueo()) {
+    // Chequear si ya está logueado
+    db.auth.getSession().then(({ data: { session } }) => {
+      if (session) window.location.href = 'panel.html';
+    });
+    // Mostrar botón olvide solo en login
+    document.getElementById('btn-olvide').style.display = 'block';
   }
-
-  // Chequear si ya está logueado
-  db.auth.getSession().then(({ data: { session } }) => {
-    if (session) window.location.href = 'panel.html';
-  });
 </script>
 </body>
 </html>
