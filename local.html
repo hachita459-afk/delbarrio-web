@@ -8,80 +8,148 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #e8f4f8; }
-    header { background: #2a9d8f; padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+
+    header {
+      background: #2a9d8f; padding: 0 16px; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
     .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
     .logo-icon { width: 36px; height: 36px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
     .logo-circle { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid #fff; display: flex; align-items: center; justify-content: center; }
     .logo-pin { width: 6px; height: 6px; border-radius: 50%; background: #fff; }
     .logo-text { font-size: 20px; font-weight: 700; color: #fff; }
-    .btn-volver { background: rgba(255,255,255,0.2); color: #fff; border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; }
+    .btn-volver {
+      background: rgba(255,255,255,0.2); color: #fff; border: none;
+      padding: 8px 16px; border-radius: 20px; font-size: 14px;
+      font-weight: 600; cursor: pointer; text-decoration: none;
+    }
+
     .loading { display: flex; align-items: center; justify-content: center; height: 60vh; font-size: 16px; color: #888; }
-    .local-wrap { max-width: 680px; margin: 0 auto; padding-bottom: 40px; }
-    .info-header { background: #fff; padding: 20px; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 12px; }
+
+    .local-wrap { max-width: 680px; margin: 0 auto; padding-bottom: 60px; }
+
+    /* INFO HEADER */
+    .info-header {
+      background: #fff; padding: 16px;
+      display: flex; align-items: flex-start; gap: 12px;
+    }
     .info-header-text { flex: 1; }
-    .nombre { font-size: 26px; font-weight: 700; color: #1a1a2e; margin-bottom: 6px; }
-    .categoria { font-size: 14px; color: #2a9d8f; font-weight: 500; margin-bottom: 4px; }
-    .direccion { font-size: 14px; color: #888; }
-    .btn-corazon { width: 42px; height: 42px; border-radius: 50%; background: #f0f0f0; border: none; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); transition: transform 0.15s; }
+    .nombre { font-size: 26px; font-weight: 700; color: #1a1a2e; margin-bottom: 4px; }
+    .categoria { font-size: 14px; color: #888; }
+    .btn-corazon {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: #fff; border: none; font-size: 22px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 4px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08); transition: transform 0.15s;
+    }
     .btn-corazon:hover { transform: scale(1.1); }
-    .fotos-wrap { position: relative; background: #1a1a2e; }
-    .foto-visible { width: 100%; max-height: 480px; object-fit: contain; display: block; background: #1a1a2e; }
-    .sin-foto { height: 200px; display: flex; align-items: center; justify-content: center; font-size: 72px; font-weight: 700; color: #fff; }
-    .fotos-nav { position: absolute; bottom: 12px; left: 0; right: 0; display: flex; justify-content: center; gap: 6px; }
-    .fotos-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; border: none; padding: 0; }
+
+    /* FOTOS */
+    .fotos-wrap { position: relative; background: #1a1a2e; width: 100%; overflow: hidden; }
+    .foto-slider { display: flex; transition: transform 0.3s ease; }
+    .foto-slide { min-width: 100%; }
+    .foto-img { width: 100%; max-height: 320px; object-fit: cover; display: block; }
+    .sin-foto {
+      height: 200px; display: flex; align-items: center; justify-content: center;
+      font-size: 72px; font-weight: 700; color: #fff;
+    }
+    .fotos-nav {
+      position: absolute; bottom: 12px; left: 0; right: 0;
+      display: flex; justify-content: center; gap: 6px;
+    }
+    .fotos-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(255,255,255,0.5); cursor: pointer;
+      border: none; padding: 0; transition: background 0.15s;
+    }
     .fotos-dot.activo { background: #fff; }
-    .fotos-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.45); border: none; color: #fff; font-size: 24px; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .fotos-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(0,0,0,0.45); border: none; color: #fff;
+      font-size: 24px; width: 36px; height: 36px; border-radius: 50%;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
     .fotos-btn-izq { left: 10px; }
     .fotos-btn-der { right: 10px; }
+
+    /* BODY */
     .body { padding: 12px 16px; }
+
     .quick-row { display: flex; gap: 12px; margin-bottom: 12px; }
     .quick-item { flex: 1; background: #fff; border-radius: 12px; padding: 14px; }
     .quick-label { font-size: 12px; color: #2a9d8f; font-weight: 500; margin-bottom: 4px; }
     .quick-value { font-size: 15px; font-weight: 500; color: #1a1a2e; }
     .quick-value a { color: #1a1a2e; text-decoration: none; }
+
     .desc-wrap { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
-    .desc-titulo { font-size: 17px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
+    .desc-titulo { font-size: 18px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
     .desc-texto { font-size: 15px; line-height: 1.6; color: #444; }
+
     .etiquetas-wrap { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
-    .etiquetas-titulo { font-size: 14px; font-weight: 600; color: #1a1a2e; margin-bottom: 10px; }
-    .etiquetas-row { display: flex; flex-wrap: wrap; gap: 6px; }
-    .etiqueta-chip { background: #f0faf9; border: 1px solid #2a9d8f; border-radius: 20px; padding: 4px 12px; font-size: 13px; color: #2a9d8f; font-weight: 500; }
-    .visitas { font-size: 12px; color: #bbb; text-align: right; margin-top: 8px; }
+    .etiquetas-titulo { font-size: 16px; font-weight: 700; color: #1a1a2e; margin-bottom: 10px; }
+    .etiquetas-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .etiqueta-chip {
+      background: #f0faf9; border: 1px solid #2a9d8f;
+      border-radius: 20px; padding: 4px 12px;
+      font-size: 13px; color: #2a9d8f; font-weight: 500;
+    }
+
+    .visitas { font-size: 12px; color: #bbb; text-align: right; margin-top: 8px; margin-bottom: 20px; }
+
     .error { text-align: center; padding: 80px 20px; color: #888; }
   </style>
 </head>
 <body>
+
 <header>
   <a class="logo" href="index.html">
     <div class="logo-icon"><div class="logo-circle"><div class="logo-pin"></div></div></div>
     <span class="logo-text">Del Barrio</span>
   </a>
-  <a class="btn-volver" href="index.html">← Volver</a>
+  <a class="btn-volver" href="javascript:history.back()">← Volver</a>
 </header>
+
 <div id="contenido"><div class="loading">Cargando...</div></div>
+
 <script>
   const SUPABASE_URL = 'https://dlvtgrjmeyuxgojryafr.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_R2C9F9NOjCNx765jp90DbA_hr70zqPT';
   const { createClient } = supabase;
   const db = createClient(SUPABASE_URL, SUPABASE_KEY);
-  const COLORES = { Restaurant:'#F0997B', Peluqueria:'#5DCAA5', Ropa:'#5DCAA5', Odontologia:'#378ADD', Supermercado:'#EF9F27', Kiosko:'#EF9F27', Carniceria:'#F0997B', Verduleria:'#2a9d8f', Panaderia:'#EF9F27', Fiambreria:'#F0997B', Iglesia:'#993556', Heladeria:'#378ADD', 'Comida Rapida':'#F0997B', Loteria:'#993556', Bicicleteria:'#2a9d8f', 'Servicio Tecnico':'#888', Libreria:'#378ADD', Cafeteria:'#EF9F27', 'Relojeria y Joyas':'#993556', Floreria:'#5DCAA5', 'Taller Mecanico Motos':'#888', 'Taller Mecanico Autos':'#888', Gomeria:'#888', 'Centro de Estetica':'#993556', 'Consultorio Legal':'#378ADD', 'Consultorio Medico':'#378ADD', 'Consultorio Contable':'#378ADD', 'Articulos de Libreria':'#378ADD', Otros:'#888' };
+
+  const COLORES = {
+    Restaurant:'#F0997B', Peluqueria:'#5DCAA5', Ropa:'#5DCAA5',
+    Odontologia:'#378ADD', Supermercado:'#EF9F27', Kiosko:'#EF9F27',
+    Carniceria:'#F0997B', Verduleria:'#2a9d8f', Panaderia:'#EF9F27',
+    Fiambreria:'#F0997B', Iglesia:'#993556', Heladeria:'#378ADD',
+    'Comida Rapida':'#F0997B', Loteria:'#993556', Bicicleteria:'#2a9d8f',
+    'Servicio Tecnico':'#888', Libreria:'#378ADD', Cafeteria:'#EF9F27',
+    'Relojeria y Joyas':'#993556', Floreria:'#5DCAA5',
+    'Taller Mecanico Motos':'#888', 'Taller Mecanico Autos':'#888',
+    Gomeria:'#888', 'Centro de Estetica':'#993556',
+    'Consultorio Legal':'#378ADD', 'Consultorio Medico':'#378ADD',
+    'Consultorio Contable':'#378ADD', 'Articulos de Libreria':'#378ADD', Otros:'#888'
+  };
 
   let fotoIdx = 0;
   let fotosArr = [];
   let localId = null;
 
-  // localStorage helpers
   function getFavoritos() {
     try { return new Set(JSON.parse(localStorage.getItem('locales_favoritos') || '[]')); } catch { return new Set(); }
   }
+
   function toggleFavorito() {
     const favs = getFavoritos();
     const idStr = String(localId);
     if (favs.has(idStr)) favs.delete(idStr); else favs.add(idStr);
     localStorage.setItem('locales_favoritos', JSON.stringify([...favs]));
-    const esFav = favs.has(idStr);
-    document.getElementById('btn-corazon').textContent = esFav ? '❤️' : '🤍';
+    document.getElementById('btn-corazon').textContent = favs.has(idStr) ? '❤️' : '🤍';
   }
+
   function guardarVisita(id) {
     try {
       const visitados = JSON.parse(localStorage.getItem('locales_visitados') || '[]');
@@ -95,7 +163,7 @@
   function irFoto(i) {
     if (i < 0 || i >= fotosArr.length) return;
     fotoIdx = i;
-    document.getElementById('foto-img').src = fotosArr[i];
+    document.querySelector('.foto-slider').style.transform = `translateX(-${i * 100}%)`;
     document.querySelectorAll('.fotos-dot').forEach((d, j) => d.classList.toggle('activo', j === i));
     const btnIzq = document.getElementById('btn-izq');
     const btnDer = document.getElementById('btn-der');
@@ -108,11 +176,13 @@
     const id = params.get('id');
     if (!id) { mostrarError('No se especificó un local.'); return; }
     localId = id;
+
     const { data, error } = await db.from('locales').select('*').eq('id', id).single();
     if (error || !data) { mostrarError('Local no encontrado.'); return; }
 
-    // Actualizar visitas en Supabase y localStorage
     await db.from('locales').update({ visitas: (data.visitas || 0) + 1, tiene_novedad: false }).eq('id', id);
+    // Registrar en visitas_app
+    await db.from('visitas_app').insert({ local_id: id });
     guardarVisita(id);
 
     document.title = 'Del Barrio — ' + data.nombre;
@@ -123,53 +193,74 @@
     const cats = Array.isArray(l.categoria) ? l.categoria : (l.categoria ? [l.categoria] : []);
     const color = COLORES[cats[0]] || '#888';
     fotosArr = l.fotos || [];
-    const inicial = (l.nombre || '?')[0].toUpperCase();
     const esFav = getFavoritos().has(String(l.id));
+    const inicial = (l.nombre || '?')[0].toUpperCase();
 
+    // Fotos
     let fotosHtml = '';
     if (fotosArr.length > 0) {
+      const slides = fotosArr.map(url =>
+        `<div class="foto-slide"><img class="foto-img" src="${url}" alt="${l.nombre}"></div>`
+      ).join('');
       const dots = fotosArr.length > 1
-        ? '<div class="fotos-nav">' + fotosArr.map((_, i) => '<button class="fotos-dot ' + (i===0?'activo':'') + '" onclick="irFoto(' + i + ')"></button>').join('') + '</div>'
+        ? '<div class="fotos-nav">' + fotosArr.map((_, i) =>
+            `<button class="fotos-dot ${i === 0 ? 'activo' : ''}" onclick="irFoto(${i})"></button>`
+          ).join('') + '</div>'
         : '';
-      const btnIzq = fotosArr.length > 1 ? '<button class="fotos-btn fotos-btn-izq" id="btn-izq" onclick="irFoto(fotoIdx-1)" style="display:none">&#8249;</button>' : '';
-      const btnDer = fotosArr.length > 1 ? '<button class="fotos-btn fotos-btn-der" id="btn-der" onclick="irFoto(fotoIdx+1)">&#8250;</button>' : '';
-      fotosHtml = '<div class="fotos-wrap">' + btnIzq + btnDer + '<img class="foto-visible" id="foto-img" src="' + fotosArr[0] + '" alt="' + l.nombre + '">' + dots + '</div>';
+      const btnIzq = fotosArr.length > 1
+        ? '<button class="fotos-btn fotos-btn-izq" id="btn-izq" onclick="irFoto(fotoIdx-1)" style="display:none">&#8249;</button>' : '';
+      const btnDer = fotosArr.length > 1
+        ? '<button class="fotos-btn fotos-btn-der" id="btn-der" onclick="irFoto(fotoIdx+1)">&#8250;</button>' : '';
+      fotosHtml = `<div class="fotos-wrap">${btnIzq}${btnDer}<div class="foto-slider">${slides}</div>${dots}</div>`;
     } else {
-      fotosHtml = '<div class="fotos-wrap"><div class="sin-foto" style="background:' + color + '">' + inicial + '</div></div>';
+      fotosHtml = `<div class="fotos-wrap"><div class="sin-foto" style="background:${color}">${inicial}</div></div>`;
     }
 
-    const telefonoHtml = l.telefono ? '<div class="quick-item"><div class="quick-label">📞 Teléfono</div><div class="quick-value"><a href="tel:' + l.telefono + '">' + l.telefono + '</a></div></div>' : '';
-    const horarioHtml = l.horario ? '<div class="quick-item"><div class="quick-label">🕐 Horario</div><div class="quick-value">' + l.horario + '</div></div>' : '';
-
-    const etiquetas = Array.isArray(l.etiquetas) ? l.etiquetas : [];
-    const etiquetasHtml = etiquetas.length > 0
-      ? '<div class="etiquetas-wrap"><div class="etiquetas-titulo">🏷 Etiquetas</div><div class="etiquetas-row">' +
-        etiquetas.map(e => '<span class="etiqueta-chip">' + e + '</span>').join('') +
-        '</div></div>'
+    // Quick items
+    const telefonoHtml = l.telefono
+      ? `<div class="quick-item"><div class="quick-label">📞 Teléfono</div><div class="quick-value"><a href="tel:${l.telefono}">${l.telefono}</a></div></div>`
+      : '';
+    const horarioHtml = l.horario
+      ? `<div class="quick-item"><div class="quick-label">🕐 Horario</div><div class="quick-value">${l.horario}</div></div>`
       : '';
 
-    document.getElementById('contenido').innerHTML =
-      '<div class="local-wrap">' +
-        '<div class="info-header">' +
-          '<div class="info-header-text">' +
-            '<div class="nombre">' + l.nombre + '</div>' +
-            '<div class="categoria">' + cats.join(' · ') + '</div>' +
-            '<div class="direccion">📍 ' + (l.direccion || '') + '</div>' +
-          '</div>' +
-          '<button class="btn-corazon" id="btn-corazon" onclick="toggleFavorito()">' + (esFav ? '❤️' : '🤍') + '</button>' +
-        '</div>' +
-        fotosHtml +
-        '<div class="body">' +
-          ((telefonoHtml || horarioHtml) ? '<div class="quick-row">' + telefonoHtml + horarioHtml + '</div>' : '') +
-          (l.descripcion ? '<div class="desc-wrap"><div class="desc-titulo">Sobre el local</div><div class="desc-texto">' + l.descripcion.replace(/\n/g, '<br>') + '</div></div>' : '') +
-          etiquetasHtml +
-          '<div class="visitas">👁 ' + ((l.visitas || 0) + 1) + ' visitas</div>' +
-        '</div>' +
-      '</div>';
+    // Descripción
+    const descHtml = l.descripcion
+      ? `<div class="desc-wrap"><div class="desc-titulo">Sobre el local</div><div class="desc-texto">${l.descripcion.replace(/\n/g, '<br>')}</div></div>`
+      : '';
+
+    // Etiquetas
+    const etiquetas = Array.isArray(l.etiquetas) ? l.etiquetas : [];
+    const etiquetasHtml = etiquetas.length > 0
+      ? `<div class="etiquetas-wrap">
+           <div class="etiquetas-titulo">Etiquetas</div>
+           <div class="etiquetas-row">${etiquetas.map(e => `<span class="etiqueta-chip">${e}</span>`).join('')}</div>
+         </div>`
+      : '';
+
+    document.getElementById('contenido').innerHTML = `
+      <div class="local-wrap">
+        <div class="info-header">
+          <div class="info-header-text">
+            <div class="nombre">${l.nombre}</div>
+            <div class="categoria">${cats.join(' · ')} · ${l.direccion || ''}</div>
+          </div>
+          <button class="btn-corazon" id="btn-corazon" onclick="toggleFavorito()">${esFav ? '❤️' : '🤍'}</button>
+        </div>
+        ${fotosHtml}
+        <div class="body">
+          ${(telefonoHtml || horarioHtml) ? `<div class="quick-row">${telefonoHtml}${horarioHtml}</div>` : ''}
+          ${descHtml}
+          ${etiquetasHtml}
+          <div class="visitas">👁 ${(l.visitas || 0) + 1} visitas</div>
+        </div>
+      </div>`;
   }
 
   function mostrarError(msg) {
-    document.getElementById('contenido').innerHTML = '<div class="error"><p style="font-size:40px;margin-bottom:16px;">😕</p><p>' + msg + '</p><br><a href="index.html" style="color:#2a9d8f;font-weight:600;">Volver al inicio</a></div>';
+    document.getElementById('contenido').innerHTML =
+      `<div class="error"><p style="font-size:40px;margin-bottom:16px;">😕</p><p>${msg}</p><br>
+       <a href="index.html" style="color:#2a9d8f;font-weight:600;">Volver al inicio</a></div>`;
   }
 
   cargar();
